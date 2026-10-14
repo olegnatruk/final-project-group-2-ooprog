@@ -62,3 +62,19 @@ new Proposed ADRs in [DECISIONS.md](DECISIONS.md):
   thread-safety question.
 
 Updated to match: ARCHITECTURE, BLUEPRINT, TEAM (contracts), CONVENTIONS, and every member's CONTEXT/TASKS.
+
+## 2026-10-14 — Kurt's foundation implemented (PR from `kurt/foundation`)
+
+All of Kurt's 32 files exist and compile with `javac --release 21 -Xlint:all` with no warnings. The app runs
+end to end for login/register/logout with role routing. Other members can now build on it — see
+[BLUEPRINT.md](BLUEPRINT.md) for the exact signatures as built.
+
+**For the other members:**
+- Pull `main` after the PR is merged, then branch from it.
+- To register your repository, edit `core/DataStore.java`: add the field, create it in the constructor
+  (`new Repository<>("pets.txt", "P", "Pet", Pet::fromRecord)`), add a `warnings.addAll(pets.load());` line in
+  `load()`, and add the accessor `pets()`. The commented lines in that file show the exact values.
+- To wire your menu, replace only your `comingSoon(...)` line in `ui/UserMenu.java` / `ui/AdminMenu.java`
+  (the comment on that line shows the replacement).
+- Enums: override `toString()` to return the label (CONVENTIONS.md).
+- New gotcha: bad data lines are dropped on the next save ([GOTCHAS.md](GOTCHAS.md)).

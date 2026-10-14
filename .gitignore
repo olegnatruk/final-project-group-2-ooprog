@@ -1,6 +1,7 @@
 # Compiled output
 out/
 *.class
+sources.txt
 
 # Runtime data (created by the app; see docs/DECISIONS.md ADR-002)
 data/

@@ -3,8 +3,8 @@
 Non-obvious bugs and footguns, grouped by subsystem. Each entry: what it looks like, what is actually
 happening, the fix. Check here **before** investigating something that "should work".
 
-No project code exists yet, so the entries below are well-known Java behaviors that directly affect this
-design. Add project-specific entries as you hit them (cross-cutting ones here; member-only ones in
+Most entries below are well-known Java behaviors that directly affect this design; entries marked
+"Observed" were hit in this project. Add project-specific entries as you hit them (cross-cutting ones here; member-only ones in
 `members/<name>/docs/NOTES.md`).
 
 ## Console input
@@ -33,6 +33,11 @@ text input must reject `|` (`Validator.requireNoDelimiter`).
 **Data seems to vanish or "file not found" between runs.** `data/` is resolved relative to the current
 working directory. Running from inside `src/` or from an IDE with a different working directory reads a
 different (or empty) `data/`. Always run from the repo root; set the IDE working directory to the repo root.
+
+**A bad line in a data file disappears after the next save.** `Repository.load()` skips bad lines (and prints
+`[INFO] Skipped bad data - ...` at startup), so they are not in memory. The next `save()` rewrites the file
+from memory, so the skipped lines are gone for good. Fix the file by hand before changing anything if the
+data matters. (Observed while testing the foundation.)
 
 **Saved changes are lost after a restart.** A service changed an object but did not call the repository's
 `save()`. Every changing service method must save every repository it touched.

@@ -72,7 +72,7 @@ Each member folder also has `TASKS.md` (checklist), `NOTES.md` (member-specific 
 No test framework exists. Verification is compile + manual run, from the repository root:
 
 ```bash
-javac -encoding UTF-8 -d out $(find src -name "*.java")
+javac --release 21 -encoding UTF-8 -d out $(find src -name "*.java")
 java -cp out petadoption.Main
 ```
 

@@ -3,7 +3,7 @@
 The complete planned file structure of the Java application: every folder, every `.java` file, who owns it,
 what kind of type it is, what it extends or implements, and its fields and method signatures.
 
-**Status: planned — no Java files exist yet.** This is the blueprint the team builds from. When a file is
+**Status: Kurt's files exist (branch `kurt/foundation`); everyone else's are planned.** This is the blueprint the team builds from. When a file is
 created, tick it in the [checklist](#build-checklist). When code differs from this blueprint, the code wins:
 update this file in the same commit.
 
@@ -240,7 +240,8 @@ private final String idPrefix;            // "U", "P", "APP", "REC"
 private final RecordParser<T> parser;
 private final List<T> items;
 
-Repository(String fileName, String idPrefix, RecordParser<T> parser)
+Repository(String fileName, String idPrefix, String entityName, RecordParser<T> parser)
+// entityName is used in messages, e.g. "User U0007 not found."
 List<String> load() throws DataFileException      // NESTED try-catch (ADR-031): outer = file, inner = each line;
                                                   // returns warnings for skipped lines
 ★ void add(T item) throws DuplicateRecordException
@@ -255,14 +256,15 @@ List<String> load() throws DataFileException      // NESTED try-catch (ADR-031):
 ### `DataStore.java` — class, **Singleton**
 ```java
 private static DataStore instance;
-private final Repository<User> users;                       // "users.txt",        "U",   User::fromRecord
-private final Repository<Pet> pets;                         // "pets.txt",         "P",   Pet::fromRecord
-private final Repository<AdoptionApplication> applications; // "applications.txt", "APP", AdoptionApplication::fromRecord
-private final Repository<AdoptionRecord> records;           // "records.txt",      "REC", AdoptionRecord::fromRecord
+private final Repository<User> users;                       // "users.txt", "U", "User", User::fromRecord   ✅ registered
+// Each member adds theirs (field, constructor line, load() line, accessor) when their model is merged:
+private final Repository<Pet> pets;                         // "pets.txt", "P", "Pet", Pet::fromRecord
+private final Repository<AdoptionApplication> applications; // "applications.txt", "APP", "Application", AdoptionApplication::fromRecord
+private final Repository<AdoptionRecord> records;           // "records.txt", "REC", "Adoption record", AdoptionRecord::fromRecord
 
 private DataStore()
 ★ static synchronized DataStore getInstance()     // ADR-034
-List<String> load() throws DataFileException     // loads all four; returns all warnings
+List<String> load() throws DataFileException     // loads every registered repository; returns all warnings
 ★ Repository<User> users()
 ★ Repository<Pet> pets()
 ★ Repository<AdoptionApplication> applications()
@@ -301,7 +303,7 @@ private User currentUser;
 
 private SessionManager()
 ★ static synchronized SessionManager getInstance()   // ADR-034
-void login(User user)
+void login(User user)                  // package-private: only AuthService (same package) logs users in/out
 void logout()
 ★ User getCurrentUser()                 // null when logged out
 ★ boolean isLoggedIn()
@@ -317,6 +319,7 @@ void logout()
 RegularUser register(String firstName, String lastName, String email, String contactNumber,
                      String address, String username, String password, String confirmPassword)
         throws ValidationException, DuplicateRecordException, DataFileException
+// Creating an ADMIN requires a logged-in admin (session.requireAdmin()).
 ★ User createAccount(String firstName, String lastName, String email, String contactNumber,
                      String address, String username, String password, Role role)
         throws ValidationException, DuplicateRecordException, DataFileException
@@ -452,10 +455,11 @@ protected User(String userId, String firstName, String lastName, String email, S
                String address, String username, String password,
                AccountStatus accountStatus, LocalDate dateCreated) throws ValidationException
 
-// getters for every field + getFullName(), isActive()
-void setFirstName(String v) throws ValidationException    // and setLastName, setEmail,
-void setContactNumber(String v) throws ValidationException // setAddress, setPassword,
-void setAccountStatus(AccountStatus status)                // all validate through Validator
+// getters for every field except password + getFullName(), isActive()
+★ boolean passwordMatches(String candidate)                // no getPassword(): the password never leaves the object
+final void setFirstName(String v) throws ValidationException    // and setLastName, setEmail,
+final void setContactNumber(String v) throws ValidationException // setAddress, setPassword,
+final void setAccountStatus(AccountStatus status) throws ValidationException  // all validate through Validator
 
 public abstract Role getRole();
 public abstract boolean canApplyForAdoption();
@@ -818,12 +822,12 @@ Options in [MAP.md §Menu tree](MAP.md#menu-tree). `StatisticsMenu` picks the st
 Tick when the file exists in `main` and compiles. Order follows [TEAM.md §Build order](TEAM.md#build-order).
 
 **Kurt**
-- [ ] `exception/` (8) · [ ] `util/ConsoleUI` · [ ] `util/TextRule` · [ ] `util/Validator` · [ ] `util/InputHelper`
-- [ ] `core/Storable` · [ ] `core/RecordParser` · [ ] `core/SearchStrategy` · [ ] `core/AllOfStrategy` · [ ] `core/RecordFinder`
-- [ ] `ui/Menu`
-- [ ] `user/Role` · [ ] `user/AccountStatus` · [ ] `user/User` · [ ] `user/Admin` · [ ] `user/RegularUser`
-- [ ] `core/FileStorage` · [ ] `core/Repository` · [ ] `core/DataStore` · [ ] `auth/SessionManager`
-- [ ] `auth/AuthService` · [ ] `auth/WelcomeMenu` · [ ] `ui/UserMenu` · [ ] `ui/AdminMenu` · [ ] `Main`
+- [x] `exception/` (8) · [x] `util/ConsoleUI` · [x] `util/TextRule` · [x] `util/Validator` · [x] `util/InputHelper`
+- [x] `core/Storable` · [x] `core/RecordParser` · [x] `core/SearchStrategy` · [x] `core/AllOfStrategy` · [x] `core/RecordFinder`
+- [x] `ui/Menu`
+- [x] `user/Role` · [x] `user/AccountStatus` · [x] `user/User` · [x] `user/Admin` · [x] `user/RegularUser`
+- [x] `core/FileStorage` · [x] `core/Repository` · [x] `core/DataStore` · [x] `auth/SessionManager`
+- [x] `auth/AuthService` · [x] `auth/WelcomeMenu` · [x] `ui/UserMenu` · [x] `ui/AdminMenu` · [x] `Main`
 
 **Julyan**
 - [ ] 5 enums · [ ] `Pet` · [ ] `Dog` · [ ] `Cat` · [ ] `Bird`

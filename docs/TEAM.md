@@ -77,6 +77,10 @@ AuthService:
                      String address, String username, String password, Role role) throws ...
   boolean isUsernameTaken(String username)
   boolean isEmailTaken(String email, String excludeUserId)   // excludeUserId = null when creating
+  // createAccount with Role.ADMIN requires a logged-in admin
+
+// user (models)
+User.passwordMatches(String candidate)       // there is no getPassword()
 
 // ui
 abstract class Menu {
@@ -168,11 +172,11 @@ conflicts and duplicate classes.
 ## Menu wiring
 
 `ui/UserMenu.java` and `ui/AdminMenu.java` belong to Kurt. Kurt creates them early with every option already
-listed; unfinished options print `[INFO] Coming soon.`. When your menu is ready, your PR may change **only
+listed; unfinished options call `comingSoon(...)`, which prints `[INFO] Coming soon - <feature> (<owner>).`. When your menu is ready, your PR may change **only
 your own placeholder line**, for example:
 
 ```java
-case 1 -> new PetAdminMenu().run();   // was: ConsoleUI.printInfo("Coming soon.");
+case 1 -> new PetAdminMenu().run();   // was: comingSoon("Manage Pets", "Julyan");
 ```
 
 Any other change to those files goes through Kurt.

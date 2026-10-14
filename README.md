@@ -57,7 +57,7 @@ working directory.
 **macOS / Linux**
 
 ```bash
-javac -encoding UTF-8 -d out $(find src -name "*.java")
+javac --release 21 -encoding UTF-8 -d out $(find src -name "*.java")
 ```
 
 ```bash
@@ -68,9 +68,12 @@ java -cp out petadoption.Main
 
 ```bat
 dir /s /b src\*.java > sources.txt
-javac -encoding UTF-8 -d out @sources.txt
+javac --release 21 -encoding UTF-8 -d out @sources.txt
 java -cp out petadoption.Main
 ```
+
+`--release 21` makes any JDK 21 or newer compile exactly to Java 21, so code that needs a newer Java fails on
+every machine, not just some.
 
 **IDE (IntelliJ / VS Code / NetBeans):** mark `src/` as the source root, set the main class to
 `petadoption.Main`, and set the working directory to the repository root.

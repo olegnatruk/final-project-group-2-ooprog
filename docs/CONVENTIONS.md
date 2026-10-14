@@ -10,7 +10,9 @@ consistently does something different, update this file to match reality.
   `Screen`; services end in `Service`; search strategies end in `Search` (keyword) or `Filter` (category).
 - Methods and variables: `camelCase`. Booleans read as questions: `isAvailable()`, `hasRecordForPet()`.
 - Constants: `UPPER_SNAKE_CASE` — `MAX_PENDING_APPLICATIONS = 3`.
-- Enums: `UPPER_SNAKE_CASE` values, plus a `getLabel()` for display.
+- Enums: `UPPER_SNAKE_CASE` values, plus a `getLabel()` for display, and `toString()` overridden to return
+  the label (so `InputHelper.readEnum` and string concatenation show "Regular User", not `REGULAR_USER`).
+  Files still store `name()`.
 
 ## Classes and encapsulation
 
