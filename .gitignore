@@ -1,0 +1,14 @@
+# Compiled output
+out/
+*.class
+
+# Runtime data (created by the app; see docs/DECISIONS.md ADR-002)
+data/
+
+# OS / IDE files
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+.vscode/
+nbproject/
