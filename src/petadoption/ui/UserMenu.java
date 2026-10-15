@@ -2,6 +2,7 @@ package petadoption.ui;
 
 import petadoption.auth.AuthService;
 import petadoption.auth.SessionManager;
+import petadoption.pet.PetBrowseMenu;
 import petadoption.util.ConsoleUI;
 
 /**
@@ -26,7 +27,7 @@ public class UserMenu extends Menu {
     @Override
     protected boolean handleChoice(int choice) {
         switch (choice) {
-            case 1 -> comingSoon("Browse Pets", "Julyan");        // new PetBrowseMenu().run();
+            case 1 -> new PetBrowseMenu().run();
             case 2 -> comingSoon("My Applications", "Ace");       // new UserApplicationMenu().run();
             case 3 -> comingSoon("Adoption History", "Derick");   // new UserHistoryMenu().run();
             case 4 -> comingSoon("My Profile", "Derick");         // new ProfileMenu().run();

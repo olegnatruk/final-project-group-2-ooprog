@@ -831,7 +831,7 @@ Tick when the file exists in `main` and compiles. Order follows [TEAM.md §Build
 
 **Julyan**
 - [x] 5 enums · [x] `Pet` · [x] `Dog` · [x] `Cat` · [x] `Bird`
-- [x] `PetService` (skeleton) · [ ] `PetDisplay` · [ ] `pet/search/` (7) · [ ] `PetAdminMenu` · [ ] `PetBrowseMenu`
+- [x] `PetService` · [x] `PetDisplay` · [x] `pet/search/` (7) · [x] `PetAdminMenu` · [x] `PetBrowseMenu`
 
 **Ace**
 - [ ] 3 enums · [ ] `AdoptionApplication`
