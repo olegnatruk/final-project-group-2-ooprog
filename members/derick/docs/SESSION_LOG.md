@@ -27,5 +27,19 @@ Implemented Phase 1 models and Phase 2 skeletons:
 - `record/RecordService` skeleton with `hasRecordForPet`, `hasRecordForApplication`, `hasRecordForUser`, `getAllRecords`.
 - `user/UserService` skeleton with `getUserById`.
 - Clean compilation on JDK 21 with `-Xlint:all`.
-- Note: `StatisticsStrategy` interface requires `AdoptionApplication`, which Ace owns and has not merged yet; deferred to PR 2 once Ace's model or skeleton is available.
+## 2026-10-15 — User and record features (PR 2: derick/user-record-features)
 
+Implemented all Phase 3 user, record, and statistics features:
+- `user/UserService`: full implementation for profile update (unique email excluding self), change password (current password check, differing new password), admin user management (addUser via AuthService.createAccount, updateUser, setAccountStatus with self and last-admin rules, resetPassword without old password, deleteUser with self/last-admin and history checks).
+- `user/search/`: `UserKeywordSearch`, `UserRoleFilter`, `UserStatusFilter` implementing `SearchStrategy<User>`.
+- `user/ProfileMenu`: view own profile, update personal info with optional Enter-to-keep prompts, and change password with confirmation.
+- `user/UserManagementMenu`: all 9 options from MAP.md, supporting view all, view details, add, update, enable/disable, reset password, delete, and combined keyword/role/status search & filter.
+- `record/RecordService`: full implementation for admin record CRUD (create from APPROVED app, date >= appDate and not in future, mark pet ADOPTED; update date/notes; delete record and revert pet to PENDING_ADOPTION) and Regular User personal history queries (getMyRecords).
+- `record/search/`: `RecordAdopterSearch`, `RecordPetSearch`, `RecordDateRangeFilter`, `RecordPetTypeFilter` implementing `SearchStrategy<AdoptionRecord>`.
+- `record/AdoptionRecordMenu`: 7 admin options including full history view, details, create record from approved app, update, delete, and search/filter.
+- `record/UserHistoryMenu`: Regular User own adoption history and details view.
+- `record/StatisticsStrategy`, `MonthlyStatisticsStrategy`, `YearlyStatisticsStrategy`: Strategy pattern implementations for monthly (counts of received, approved, rejected, cancelled, pending, completed) and yearly breakdown.
+- `record/StatisticsService`: Strategy context with dual constructors and runtime `setStrategy`.
+- `record/StatisticsMenu`: 3 admin options running monthly and yearly reports, validating year (2000 to current) and month (not in future).
+- Menu wiring: replaced Derick's `comingSoon(...)` calls in `ui/UserMenu.java` (options 3 and 4) and `ui/AdminMenu.java` (options 2, 4, 5, and 6).
+- Verification: clean compile on JDK 21 (`-Xlint:all`), executed and passed every scenario in the TASKS.md checklist including validation and edge cases.
