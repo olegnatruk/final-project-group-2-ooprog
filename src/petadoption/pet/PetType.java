@@ -1,8 +1,6 @@
 package petadoption.pet;
 
-/**
- * Pet species type.
- */
+/** The kinds of pet the shelter handles. Each value matches one {@link Pet} subclass (ADR-018). */
 public enum PetType {
     DOG("Dog"),
     CAT("Cat"),
@@ -18,6 +16,7 @@ public enum PetType {
         return label;
     }
 
+    /** Returns the readable label so menus and tables never show raw names like DOG. */
     @Override
     public String toString() {
         return label;

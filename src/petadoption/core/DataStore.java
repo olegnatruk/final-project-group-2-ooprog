@@ -5,6 +5,7 @@ import java.util.List;
 
 import petadoption.application.AdoptionApplication;
 import petadoption.exception.DataFileException;
+import petadoption.pet.Pet;
 import petadoption.record.AdoptionRecord;
 import petadoption.user.User;
 
@@ -13,20 +14,20 @@ import petadoption.user.User;
  * copies would overwrite each other's saves. Reach it only through {@link #getInstance()}.
  *
  * <p>Each entity has its own {@link Repository}. Members register theirs here when their model class is
- * merged (see the commented lines below and docs/TEAM.md).
+ * merged (see docs/TEAM.md).
  */
 public class DataStore {
 
     private static DataStore instance;
 
     private final Repository<User> users;
-    // Registered by each member when their model is merged:
-    // private final Repository<Pet> pets;                          // Julyan: "pets.txt", "P", "Pet", Pet::fromRecord
+    private final Repository<Pet> pets;
     private final Repository<AdoptionApplication> applications;
     private final Repository<AdoptionRecord> records;
 
     private DataStore() {
         users = new Repository<>("users.txt", "U", "User", User::fromRecord);
+        pets = new Repository<>("pets.txt", "P", "Pet", Pet::fromRecord);
         applications = new Repository<>("applications.txt", "APP", "Application", AdoptionApplication::fromRecord);
         records = new Repository<>("records.txt", "REC", "Adoption record", AdoptionRecord::fromRecord);
     }
@@ -50,6 +51,7 @@ public class DataStore {
     public List<String> load() throws DataFileException {
         List<String> warnings = new ArrayList<>();
         warnings.addAll(users.load());
+        warnings.addAll(pets.load());
         warnings.addAll(applications.load());
         warnings.addAll(records.load());
         return warnings;
@@ -57,6 +59,10 @@ public class DataStore {
 
     public Repository<User> users() {
         return users;
+    }
+
+    public Repository<Pet> pets() {
+        return pets;
     }
 
     public Repository<AdoptionApplication> applications() {

@@ -2,12 +2,11 @@ package petadoption.ui;
 
 import petadoption.auth.AuthService;
 import petadoption.auth.SessionManager;
+import petadoption.pet.PetAdminMenu;
 import petadoption.util.ConsoleUI;
 
 /**
- * Home menu for Admins. Each option opens a menu owned by another member. Until that menu is merged, the
- * option shows a "Coming soon" message; the owner replaces only their own line
- * (see docs/TEAM.md, Menu wiring).
+ * Home menu for Admins. Each option opens a menu owned by a team member.
  */
 public class AdminMenu extends Menu {
 
@@ -27,7 +26,7 @@ public class AdminMenu extends Menu {
     @Override
     protected boolean handleChoice(int choice) {
         switch (choice) {
-            case 1 -> comingSoon("Manage Pets", "Julyan");               // new PetAdminMenu().run();
+            case 1 -> new PetAdminMenu().run();
             case 2 -> new petadoption.user.UserManagementMenu().run();
             case 3 -> new petadoption.application.AdminApplicationMenu().run();
             case 4 -> new petadoption.record.AdoptionRecordMenu().run();
@@ -41,9 +40,5 @@ public class AdminMenu extends Menu {
             default -> ConsoleUI.printError("Unknown option.");
         }
         return true;
-    }
-
-    private void comingSoon(String feature, String owner) {
-        ConsoleUI.printInfo("Coming soon - " + feature + " (" + owner + ").");
     }
 }
