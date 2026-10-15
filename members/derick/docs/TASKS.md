@@ -5,15 +5,15 @@ Tick `[x]` when the item is merged into `main` and verified by running the app. 
 
 ## Phase 1 — Models
 
-- [ ] `AdoptionRecord`: private fields; setters only for `adoptionDate` and `notes` (validated); `toRecord()`; `AdoptionRecord.fromRecord(String[] fields)`
-- [ ] `StatisticsReport` (counts per period; may be a Java `record`)
+- [x] `AdoptionRecord`: private fields; setters only for `adoptionDate` and `notes` (validated); `toRecord()`; `AdoptionRecord.fromRecord(String[] fields)`
+- [x] `StatisticsReport` (counts per period; may be a Java `record`)
 - [ ] `StatisticsStrategy` interface
 
 ## Phase 2 — Skeletons (others depend on these)
 
-- [ ] `RecordService` with `hasRecordForPet`, `hasRecordForApplication`, `hasRecordForUser`, `getAllRecords`
-- [ ] `UserService` with `getUserById`
-- [ ] Ask Kurt to register `records()` in `DataStore`
+- [x] `RecordService` with `hasRecordForPet`, `hasRecordForApplication`, `hasRecordForUser`, `getAllRecords`
+- [x] `UserService` with `getUserById`
+- [x] Ask Kurt to register `records()` in `DataStore`
 
 ## Phase 3 — Features
 

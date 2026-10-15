@@ -839,7 +839,7 @@ Tick when the file exists in `main` and compiles. Order follows [TEAM.md §Build
 - [ ] `UserApplicationMenu` · [ ] `AdminApplicationMenu`
 
 **Derick**
-- [ ] `AdoptionRecord` · [ ] `StatisticsReport` · [ ] `StatisticsStrategy`
-- [ ] `RecordService` · [ ] `UserService` · [ ] `user/search/` (3) · [ ] `record/search/` (4)
+- [x] `AdoptionRecord` · [x] `StatisticsReport` · [ ] `StatisticsStrategy`
+- [x] `RecordService` (skeleton) · [x] `UserService` (skeleton) · [ ] `user/search/` (3) · [ ] `record/search/` (4)
 - [ ] `MonthlyStatisticsStrategy` · [ ] `YearlyStatisticsStrategy` · [ ] `StatisticsService`
 - [ ] `ProfileMenu` · [ ] `UserManagementMenu` · [ ] `AdoptionRecordMenu` · [ ] `UserHistoryMenu` · [ ] `StatisticsMenu`
