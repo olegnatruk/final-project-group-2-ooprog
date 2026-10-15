@@ -28,8 +28,8 @@ public class UserMenu extends Menu {
         switch (choice) {
             case 1 -> comingSoon("Browse Pets", "Julyan");        // new PetBrowseMenu().run();
             case 2 -> comingSoon("My Applications", "Ace");       // new UserApplicationMenu().run();
-            case 3 -> comingSoon("Adoption History", "Derick");   // new UserHistoryMenu().run();
-            case 4 -> comingSoon("My Profile", "Derick");         // new ProfileMenu().run();
+            case 3 -> new petadoption.record.UserHistoryMenu().run();
+            case 4 -> new petadoption.user.ProfileMenu().run();
             case 5 -> {
                 authService.logout();
                 ConsoleUI.printSuccess("You have been logged out.");

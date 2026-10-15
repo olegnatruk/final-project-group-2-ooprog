@@ -28,11 +28,11 @@ public class AdminMenu extends Menu {
     protected boolean handleChoice(int choice) {
         switch (choice) {
             case 1 -> comingSoon("Manage Pets", "Julyan");               // new PetAdminMenu().run();
-            case 2 -> comingSoon("Manage Users", "Derick");              // new UserManagementMenu().run();
+            case 2 -> new petadoption.user.UserManagementMenu().run();
             case 3 -> comingSoon("Adoption Applications", "Ace");        // new AdminApplicationMenu().run();
-            case 4 -> comingSoon("Adoption Records", "Derick");          // new AdoptionRecordMenu().run();
-            case 5 -> comingSoon("Adoption Statistics", "Derick");       // new StatisticsMenu().run();
-            case 6 -> comingSoon("My Profile", "Derick");                // new ProfileMenu().run();
+            case 4 -> new petadoption.record.AdoptionRecordMenu().run();
+            case 5 -> new petadoption.record.StatisticsMenu().run();
+            case 6 -> new petadoption.user.ProfileMenu().run();
             case 7 -> {
                 authService.logout();
                 ConsoleUI.printSuccess("You have been logged out.");
