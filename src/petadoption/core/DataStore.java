@@ -3,6 +3,7 @@ package petadoption.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import petadoption.application.AdoptionApplication;
 import petadoption.exception.DataFileException;
 import petadoption.record.AdoptionRecord;
 import petadoption.user.User;
@@ -21,11 +22,12 @@ public class DataStore {
     private final Repository<User> users;
     // Registered by each member when their model is merged:
     // private final Repository<Pet> pets;                          // Julyan: "pets.txt", "P", "Pet", Pet::fromRecord
-    // private final Repository<AdoptionApplication> applications;  // Ace: "applications.txt", "APP", "Application", AdoptionApplication::fromRecord
+    private final Repository<AdoptionApplication> applications;
     private final Repository<AdoptionRecord> records;
 
     private DataStore() {
         users = new Repository<>("users.txt", "U", "User", User::fromRecord);
+        applications = new Repository<>("applications.txt", "APP", "Application", AdoptionApplication::fromRecord);
         records = new Repository<>("records.txt", "REC", "Adoption record", AdoptionRecord::fromRecord);
     }
 
@@ -48,12 +50,17 @@ public class DataStore {
     public List<String> load() throws DataFileException {
         List<String> warnings = new ArrayList<>();
         warnings.addAll(users.load());
+        warnings.addAll(applications.load());
         warnings.addAll(records.load());
         return warnings;
     }
 
     public Repository<User> users() {
         return users;
+    }
+
+    public Repository<AdoptionApplication> applications() {
+        return applications;
     }
 
     public Repository<AdoptionRecord> records() {

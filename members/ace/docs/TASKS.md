@@ -5,17 +5,17 @@ Tick `[x]` when the item is merged into `main` and verified by running the app. 
 
 ## Phase 1 — Model
 
-- [ ] Enums: `ApplicationStatus`, `LivingSituation`, `RejectionReason` — each with `getLabel()`
-- [ ] `AdoptionApplication`: private fields, validating setters for editable fields, **no `setStatus`**
-- [ ] Status methods `approve()`, `reject(reason)`, `cancel()`, `revokeApproval(reason)` — each checks the current status, throws `InvalidStatusTransitionException`, sets `decisionDate`/`decisionReason`
-- [ ] Cross-field rule: experience details required only when `hasPreviousPets` is true
-- [ ] `toRecord()` and `AdoptionApplication.fromRecord(String[] fields)`
+- [x] Enums: `ApplicationStatus`, `LivingSituation`, `RejectionReason` — each with `getLabel()`
+- [x] `AdoptionApplication`: private fields, validating setters for editable fields, **no `setStatus`**
+- [x] Status methods `approve()`, `reject(reason)`, `cancel()`, `revokeApproval(reason)` — each checks the current status, throws `InvalidStatusTransitionException`, sets `decisionDate`/`decisionReason`
+- [x] Cross-field rule: experience details required only when `hasPreviousPets` is true
+- [x] `toRecord()` and `AdoptionApplication.fromRecord(String[] fields)`
 
 ## Phase 2 — Skeleton (others depend on these)
 
-- [ ] `ApplicationService` with every method in [TEAM.md §Ace provides](../../../docs/TEAM.md#ace-provides-applicationservice--form)
-- [ ] `ApplicationFormScreen.submitFor(String petId)` signature
-- [ ] Ask Kurt to register `applications()` in `DataStore`
+- [x] `ApplicationService` with every method in [TEAM.md §Ace provides](../../../docs/TEAM.md#ace-provides-applicationservice--form)
+- [x] `ApplicationFormScreen.submitFor(String petId)` signature
+- [x] Register `applications()` in `DataStore`
 
 ## Phase 3 — Features
 

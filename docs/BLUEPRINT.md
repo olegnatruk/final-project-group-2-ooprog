@@ -834,8 +834,8 @@ Tick when the file exists in `main` and compiles. Order follows [TEAM.md §Build
 - [ ] `PetService` · [ ] `PetDisplay` · [ ] `pet/search/` (7) · [ ] `PetAdminMenu` · [ ] `PetBrowseMenu`
 
 **Ace**
-- [ ] 3 enums · [ ] `AdoptionApplication`
-- [ ] `ApplicationService` · [ ] `ApplicationDisplay` · [ ] `ApplicationFormScreen` · [ ] `application/search/` (3)
+- [x] 3 enums · [x] `AdoptionApplication`
+- [x] `ApplicationService` (skeleton) · [ ] `ApplicationDisplay` · [x] `ApplicationFormScreen` (skeleton) · [ ] `application/search/` (3)
 - [ ] `UserApplicationMenu` · [ ] `AdminApplicationMenu`
 
 **Derick**
