@@ -830,8 +830,8 @@ Tick when the file exists in `main` and compiles. Order follows [TEAM.md §Build
 - [x] `auth/AuthService` · [x] `auth/WelcomeMenu` · [x] `ui/UserMenu` · [x] `ui/AdminMenu` · [x] `Main`
 
 **Julyan**
-- [ ] 5 enums · [ ] `Pet` · [ ] `Dog` · [ ] `Cat` · [ ] `Bird`
-- [ ] `PetService` · [ ] `PetDisplay` · [ ] `pet/search/` (7) · [ ] `PetAdminMenu` · [ ] `PetBrowseMenu`
+- [x] 5 enums · [x] `Pet` · [x] `Dog` · [x] `Cat` · [x] `Bird`
+- [x] `PetService` (skeleton) · [ ] `PetDisplay` · [ ] `pet/search/` (7) · [ ] `PetAdminMenu` · [ ] `PetBrowseMenu`
 
 **Ace**
 - [ ] 3 enums · [ ] `AdoptionApplication`

@@ -5,15 +5,15 @@ Tick `[x]` when the item is merged into `main` and verified by running the app. 
 
 ## Phase 1 — Models (can start before Kurt's Phase 1 merges; finish after)
 
-- [ ] Enums: `PetType`, `Gender`, `PetStatus`, `VaccinationStatus`, `DogSize` — each with `getLabel()`
-- [ ] `Pet` (abstract): private fields, validating setters (age/weight use `getMaxAgeYears()`/`getMaxWeightKg()`), abstract methods, `toRecord()`
-- [ ] `Dog`, `Cat`, `Bird`: extra field, overrides of max age, max weight, `getType()`, `getTypeSpecificDetails()`
-- [ ] `Pet.fromRecord(String[] fields)`: reads `type`, builds the right subclass; multi-catch for bad values
+- [x] Enums: `PetType`, `Gender`, `PetStatus`, `VaccinationStatus`, `DogSize` — each with `getLabel()`
+- [x] `Pet` (abstract): private fields, validating setters (age/weight use `getMaxAgeYears()`/`getMaxWeightKg()`), abstract methods, `toRecord()`
+- [x] `Dog`, `Cat`, `Bird`: extra field, overrides of max age, max weight, `getType()`, `getTypeSpecificDetails()`
+- [x] `Pet.fromRecord(String[] fields)`: reads `type`, builds the right subclass; multi-catch for bad values
 
 ## Phase 2 — Skeleton
 
-- [ ] `PetService` with every method in [TEAM.md §Julyan provides](../../../docs/TEAM.md#julyan-provides-petservice) (bodies may throw `UnsupportedOperationException` at first)
-- [ ] Ask Kurt to register `pets()` in `DataStore` with `Pet::fromRecord`
+- [x] `PetService` with every method in [TEAM.md §Julyan provides](../../../docs/TEAM.md#julyan-provides-petservice) (bodies may throw `UnsupportedOperationException` at first)
+- [x] Ask Kurt to register `pets()` in `DataStore` with `Pet::fromRecord`
 
 ## Phase 3 — Features
 
