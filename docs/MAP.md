@@ -24,11 +24,11 @@ Root package: `petadoption` (source root `src/`, so files live under `src/petado
 | Change pet CRUD or pet status rules | `pet/PetService.java` | Julyan |
 | Change browse / Pet Passport display | `pet/PetDisplay.java`, `pet/PetBrowseMenu.java`, `Pet.getTypeSpecificDetails()` | Julyan |
 | Add a pet search or filter | new class in `pet/search/` | Julyan |
-| Change application rules (submit, approve, reject, …) | `application/ApplicationService.java`, `application/AdoptionApplication.java` | Ace |
-| Change the application form | `application/ApplicationFormScreen.java` | Ace |
-| Change how applications are listed / shown | `application/ApplicationDisplay.java` | Ace |
-| Change rejection reasons | `application/RejectionReason.java` | Ace |
-| Add an application search or filter | new class in `application/search/` | Ace |
+| Change application rules (submit, approve, reject, …) | `application/ApplicationService.java` ✅, `application/AdoptionApplication.java` ✅ | Ace |
+| Change the application form | `application/ApplicationFormScreen.java` ✅ | Ace |
+| Change how applications are listed / shown | `application/ApplicationDisplay.java` ✅ | Ace |
+| Change rejection reasons | `application/RejectionReason.java` ✅ | Ace |
+| Add an application search or filter | new class in `application/search/` ✅ | Ace |
 | Change profile screens | `user/ProfileMenu.java`, `user/UserService.java` | Derick |
 | Change admin user management | `user/UserManagementMenu.java`, `user/UserService.java` | Derick |
 | Add a user search or filter | new class in `user/search/` | Derick |

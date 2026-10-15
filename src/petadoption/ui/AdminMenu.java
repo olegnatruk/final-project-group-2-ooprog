@@ -29,7 +29,7 @@ public class AdminMenu extends Menu {
         switch (choice) {
             case 1 -> comingSoon("Manage Pets", "Julyan");               // new PetAdminMenu().run();
             case 2 -> new petadoption.user.UserManagementMenu().run();
-            case 3 -> comingSoon("Adoption Applications", "Ace");        // new AdminApplicationMenu().run();
+            case 3 -> new petadoption.application.AdminApplicationMenu().run();
             case 4 -> new petadoption.record.AdoptionRecordMenu().run();
             case 5 -> new petadoption.record.StatisticsMenu().run();
             case 6 -> new petadoption.user.ProfileMenu().run();

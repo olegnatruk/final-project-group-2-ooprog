@@ -835,8 +835,8 @@ Tick when the file exists in `main` and compiles. Order follows [TEAM.md §Build
 
 **Ace**
 - [x] 3 enums · [x] `AdoptionApplication`
-- [x] `ApplicationService` (skeleton) · [ ] `ApplicationDisplay` · [x] `ApplicationFormScreen` (skeleton) · [ ] `application/search/` (3)
-- [ ] `UserApplicationMenu` · [ ] `AdminApplicationMenu`
+- [x] `ApplicationService` · [x] `ApplicationDisplay` · [x] `ApplicationFormScreen` · [x] `application/search/` (3)
+- [x] `UserApplicationMenu` · [x] `AdminApplicationMenu`
 
 **Derick**
 - [x] `AdoptionRecord` · [x] `StatisticsReport` · [x] `StatisticsStrategy`

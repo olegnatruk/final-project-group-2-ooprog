@@ -78,3 +78,15 @@ end to end for login/register/logout with role routing. Other members can now bu
   (the comment on that line shows the replacement).
 - Enums: override `toString()` to return the label (CONVENTIONS.md).
 - New gotcha: bad data lines are dropped on the next save ([GOTCHAS.md](GOTCHAS.md)).
+
+## 2026-10-15 — Adoption application workflow implemented (Ace)
+
+Implemented Phase 1 models, Phase 2 skeletons, and Phase 3 features for the application package:
+- Models & Enums: `AdoptionApplication` (private fields, validating setters, guarded status methods `approve`, `reject`, `cancel`, `revokeApproval` without `setStatus`, and pipe-delimited persistence), `ApplicationStatus`, `LivingSituation`, `RejectionReason`.
+- Service & Queries: `ApplicationService` with full implementation of `submitApplication` (active duplicate check, limit 3 pending), `getMyApplications`, `getMyApplicationById`, `updateMyApplication`, `cancelMyApplication`, `getAllApplications`, `getApplicationById`, `approveApplication` (transitions pet to PENDING_ADOPTION, auto-rejects other pending apps for the same pet), `rejectApplication`, `revokeApproval` (checks no adoption record exists, returns pet to AVAILABLE), `deleteApplication`, and `search` via `RecordFinder`.
+- Cross-member contract queries: `hasAnyApplicationForPet`, `hasApprovedApplicationForPet`, `hasAnyApplicationForUser`, `getApprovedApplicationsWithoutRecord`.
+- UI: `ApplicationDisplay`, `ApplicationFormScreen`, `UserApplicationMenu`, and `AdminApplicationMenu`.
+- Search: concrete strategies in `petadoption.application.search.*`.
+- Menu wiring: connected `ui/UserMenu` option 2 and `ui/AdminMenu` option 3.
+- DataStore: registered `applications()` repository in `core/DataStore.java`.
+

@@ -27,7 +27,7 @@ public class UserMenu extends Menu {
     protected boolean handleChoice(int choice) {
         switch (choice) {
             case 1 -> comingSoon("Browse Pets", "Julyan");        // new PetBrowseMenu().run();
-            case 2 -> comingSoon("My Applications", "Ace");       // new UserApplicationMenu().run();
+            case 2 -> new petadoption.application.UserApplicationMenu().run();
             case 3 -> new petadoption.record.UserHistoryMenu().run();
             case 4 -> new petadoption.user.ProfileMenu().run();
             case 5 -> {
