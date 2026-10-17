@@ -43,3 +43,9 @@ Implemented all Phase 3 user, record, and statistics features:
 - `record/StatisticsMenu`: 3 admin options running monthly and yearly reports, validating year (2000 to current) and month (not in future).
 - Menu wiring: replaced Derick's `comingSoon(...)` calls in `ui/UserMenu.java` (options 3 and 4) and `ui/AdminMenu.java` (options 2, 4, 5, and 6).
 - Verification: clean compile on JDK 21 (`-Xlint:all`), executed and passed every scenario in the TASKS.md checklist including validation and edge cases.
+
+## 2026-10-17 — Git identity fix and completion
+
+- My user/record/statistics features are merged into main and all items in members/derick/docs/TASKS.md are ticked.
+- I fixed my git identity: earlier commits (93d4bea, 16f70af) used the hostname email derickinandan@Direkrekreks-MacBook-Air.local, so GitHub couldn't link them to my account. Commits from now on use my GitHub noreply email.
+- Next: wait for Kurt's Phase 4 end-to-end run and fix any bugs in user/, record/, or statistics on a derick/fix-<thing> branch with a PR.
