@@ -65,12 +65,18 @@ public class PetAdminMenu extends Menu {
 
     private void viewAllPets() {
         ConsoleUI.printHeader("ALL PETS");
+        if (PetDisplay.printIfNoPets(petService)) {
+            return;
+        }
         List<Pet> pets = petService.getAllPets();
         PetDisplay.printPetTable(pets);
     }
 
     private void viewPetPassport() throws PetAdoptionException {
         ConsoleUI.printHeader("VIEW PET PASSPORT");
+        if (PetDisplay.printIfNoPets(petService)) {
+            return;
+        }
         String petId = InputHelper.readId("Enter Pet ID: ", "P");
         Pet pet = petService.getPetById(petId);
         PetDisplay.printPassport(pet);
@@ -129,6 +135,9 @@ public class PetAdminMenu extends Menu {
 
     private void updatePetFlow() throws PetAdoptionException {
         ConsoleUI.printHeader("UPDATE PET INFORMATION");
+        if (PetDisplay.printIfNoPets(petService)) {
+            return;
+        }
         String petId = InputHelper.readId("Enter Pet ID to update: ", "P");
         Pet pet = petService.getPetById(petId);
 
@@ -199,6 +208,9 @@ public class PetAdminMenu extends Menu {
 
     private void updatePetStatusFlow() throws PetAdoptionException {
         ConsoleUI.printHeader("UPDATE PET STATUS");
+        if (PetDisplay.printIfNoPets(petService)) {
+            return;
+        }
         String petId = InputHelper.readId("Enter Pet ID: ", "P");
         Pet pet = petService.getPetById(petId);
 
@@ -206,6 +218,7 @@ public class PetAdminMenu extends Menu {
         System.out.println("Current status: " + pet.getStatus().getLabel());
 
         PetStatus newStatus = InputHelper.readEnum("Select new status:", PetStatus.values());
+        petService.checkStatusChange(petId, newStatus);
         if (!InputHelper.confirm("change status of pet " + petId + " to " + newStatus.getLabel())) {
             return;
         }
@@ -216,8 +229,12 @@ public class PetAdminMenu extends Menu {
 
     private void deletePetFlow() throws PetAdoptionException {
         ConsoleUI.printHeader("DELETE PET");
+        if (PetDisplay.printIfNoPets(petService)) {
+            return;
+        }
         String petId = InputHelper.readId("Enter Pet ID to delete: ", "P");
         Pet pet = petService.getPetById(petId);
+        petService.checkCanDelete(petId);
 
         System.out.println("Pet to delete: " + pet.getName() + " (" + pet.getPetId() + ", "
                 + pet.getType().getLabel() + ", status: " + pet.getStatus().getLabel() + ")");
@@ -231,6 +248,9 @@ public class PetAdminMenu extends Menu {
 
     private void searchAndFilterFlow() {
         ConsoleUI.printHeader("SEARCH & FILTER PETS");
+        if (PetDisplay.printIfNoPets(petService)) {
+            return;
+        }
         System.out.println("  1. Keyword Search (name, breed, type)");
         System.out.println("  2. Filter by Criteria (type, breed, gender, age, status)");
         System.out.println("  3. Back");
@@ -291,25 +311,25 @@ public class PetAdminMenu extends Menu {
     // ------------------------------------------------------------------ input helpers
 
     private <E extends Enum<E>> E readOptionalEnum(String prompt, E currentValue, E[] values) {
-        System.out.println(prompt + " [Current: " + currentValue + "] (Press Enter to keep, or choose new):");
+        System.out.println(prompt + ":");
         for (int i = 0; i < values.length; i++) {
             System.out.println("  " + (i + 1) + ". " + values[i]);
         }
-        while (true) {
-            String line = InputHelper.readOptional("Enter choice (1-" + values.length + ")", "", input -> input);
-            if (line.isEmpty()) {
-                return currentValue;
-            }
+        // Enter returns the current label, which is never a number, so it cannot clash with a typed choice.
+        String keep = currentValue.toString();
+        String line = InputHelper.readOptional("Enter choice (1-" + values.length + ")", keep, input -> {
             try {
-                int choice = Integer.parseInt(line);
+                int choice = Integer.parseInt(input);
                 if (choice >= 1 && choice <= values.length) {
-                    return values[choice - 1];
+                    return input;
                 }
             } catch (NumberFormatException e) {
-                // fall through
+                // fall through to the error below
             }
-            ConsoleUI.printError("Please enter a number from 1 to " + values.length + " or press Enter to keep current.");
-        }
+            throw new ValidationException(prompt,
+                    "Please enter a number from 1 to " + values.length + " or press Enter to keep current.");
+        });
+        return line.equals(keep) ? currentValue : values[Integer.parseInt(line) - 1];
     }
 
     private boolean readOptionalBoolean(String prompt, boolean currentValue) {

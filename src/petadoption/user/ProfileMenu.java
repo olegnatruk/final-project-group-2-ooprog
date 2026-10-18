@@ -1,6 +1,9 @@
 package petadoption.user;
 
+import petadoption.auth.AuthService;
+import petadoption.auth.SessionManager;
 import petadoption.exception.PetAdoptionException;
+import petadoption.exception.ValidationException;
 import petadoption.ui.Menu;
 import petadoption.util.ConsoleUI;
 import petadoption.util.InputHelper;
@@ -13,6 +16,7 @@ import petadoption.util.Validator;
 public class ProfileMenu extends Menu {
 
     private final UserService userService = new UserService();
+    private final AuthService authService = new AuthService();
 
     @Override
     protected String getTitle() {
@@ -68,7 +72,7 @@ public class ProfileMenu extends Menu {
         String lastName = InputHelper.readOptional("Last name", user.getLastName(),
                 input -> Validator.validateName("Last name", input));
         String email = InputHelper.readOptional("Email", user.getEmail(),
-                Validator::validateEmail);
+                input -> authService.checkNewEmail(input, user.getUserId()));
         String contact = InputHelper.readOptional("Contact number", user.getContactNumber(),
                 Validator::normalizeContactNumber);
         String address = InputHelper.readOptional("Address", user.getAddress(),
@@ -85,12 +89,31 @@ public class ProfileMenu extends Menu {
     private void changePassword() throws PetAdoptionException {
         ConsoleUI.printHeader("Change Password");
 
+        User user = SessionManager.getInstance().requireLoggedIn();
         String currentPassword = InputHelper.readValidated("Current password: ",
                 input -> Validator.requireNotBlank("Current password", input));
-        String newPassword = InputHelper.readValidated("New password: ",
-                input -> Validator.validatePassword(input, null));
-        String confirmPassword = InputHelper.readValidated("Confirm new password: ",
-                input -> Validator.requireNotBlank("Confirm new password", input));
+        if (!user.passwordMatches(currentPassword)) {
+            ConsoleUI.printError("Current password is incorrect.");
+            return;
+        }
+
+        String newPassword;
+        String confirmPassword;
+        while (true) {
+            newPassword = InputHelper.readValidated("New password: ", input -> {
+                String checked = Validator.validatePassword(input, user.getUsername());
+                if (checked.equals(currentPassword)) {
+                    throw new ValidationException("New password",
+                            "New password must be different from the current password.");
+                }
+                return checked;
+            });
+            confirmPassword = InputHelper.readText("Confirm new password: ");
+            if (newPassword.equals(confirmPassword)) {
+                break;
+            }
+            ConsoleUI.printError("Passwords do not match. Please try again.");
+        }
 
         if (!InputHelper.confirm("change your password")) {
             return;

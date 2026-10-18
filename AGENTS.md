@@ -5,8 +5,8 @@ manage pets, users, applications, adoption records, and statistics. File storage
 plaintext passwords, no external libraries. The professor grades: Login, CRUD, roles, the 4 OOP pillars,
 exception handling, Singleton + Strategy, and "all types of validations".
 
-**Current state: docs only, no Java code yet.** Every class in these docs is *planned*. Never claim a class
-exists until you have seen the file.
+**Current state: all four members' code is merged into `main` and runs end to end.** The docs describe the
+code as built; if a doc and the code disagree, the code wins.
 
 **Read the doc you need — don't scan the repo.**
 

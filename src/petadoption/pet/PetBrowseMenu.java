@@ -63,12 +63,18 @@ public class PetBrowseMenu extends Menu {
 
     private void viewPets() {
         ConsoleUI.printHeader("AVAILABLE PETS");
+        if (PetDisplay.printIfNoPets(petService)) {
+            return;
+        }
         List<Pet> pets = isAdmin() ? petService.getAllPets() : petService.getVisiblePets();
         PetDisplay.printPetTable(pets);
     }
 
     private void searchByKeyword() {
         ConsoleUI.printHeader("SEARCH PETS BY KEYWORD");
+        if (PetDisplay.printIfNoPets(petService)) {
+            return;
+        }
         String keyword = InputHelper.readText("Enter search keyword (name, breed, or type): ", 1, 50);
         List<Pet> results = petService.search(new PetKeywordSearch(keyword));
         if (results.isEmpty()) {
@@ -80,6 +86,9 @@ public class PetBrowseMenu extends Menu {
 
     private void filterPets() {
         ConsoleUI.printHeader("FILTER PETS");
+        if (PetDisplay.printIfNoPets(petService)) {
+            return;
+        }
         List<SearchStrategy<Pet>> filters = new ArrayList<>();
 
         if (InputHelper.readYesNo("Filter by pet type?")) {
@@ -123,6 +132,9 @@ public class PetBrowseMenu extends Menu {
 
     private void viewPetPassport() throws PetAdoptionException {
         ConsoleUI.printHeader("VIEW PET PASSPORT");
+        if (PetDisplay.printIfNoPets(petService)) {
+            return;
+        }
         String petId = InputHelper.readId("Enter Pet ID: ", "P");
         Pet pet = petService.getVisiblePetById(petId);
         PetDisplay.printPassport(pet);

@@ -36,12 +36,12 @@ public class ApplicationFormScreen {
         }
 
         try {
-            Pet pet = petService.getPetById(targetPetId);
-            if (pet != null) {
-                ConsoleUI.printInfo("Applying for pet: " + pet.getName() + " (" + pet.getId() + ")");
-            }
-        } catch (Exception ignored) {
-            // Skeleton handling
+            targetPetId = applicationService.checkCanApply(targetPetId);
+            Pet pet = petService.getVisiblePetById(targetPetId);
+            ConsoleUI.printInfo("Applying for pet: " + pet.getName() + " (" + pet.getId() + ")");
+        } catch (PetAdoptionException e) {
+            ConsoleUI.printError(e.getMessage());
+            return;
         }
 
         ConsoleUI.printHeader("Adoption Application Form");
@@ -51,15 +51,15 @@ public class ApplicationFormScreen {
         String defaultContact = currentUser.getContactNumber();
 
         try {
-            String address = InputHelper.readOptional("Address [" + defaultAddress + "]: ",
+            String address = InputHelper.readOptional("Address",
                     defaultAddress, Validator::validateAddress);
-            String contactNumber = InputHelper.readOptional("Contact number [" + defaultContact + "]: ",
+            String contactNumber = InputHelper.readOptional("Contact number",
                     defaultContact, Validator::normalizeContactNumber);
             String occupation = InputHelper.readValidated("Occupation: ",
                     AdoptionApplication::validateOccupation);
             LivingSituation livingSituation = InputHelper.readEnum("Living Situation:",
                     LivingSituation.values());
-            boolean hasPreviousPets = InputHelper.readYesNo("Do you have previous pet experience? (y/n): ");
+            boolean hasPreviousPets = InputHelper.readYesNo("Do you have previous pet experience?");
             String experienceDetails = "";
             if (hasPreviousPets) {
                 experienceDetails = InputHelper.readValidated("Experience details (10-300 characters): ",
@@ -69,7 +69,6 @@ public class ApplicationFormScreen {
                     input -> Validator.requireLength("Reason for adoption", input, 20, 500));
 
             if (!InputHelper.confirm("submit this application")) {
-                ConsoleUI.printInfo("Application submission cancelled.");
                 return;
             }
 
@@ -104,23 +103,23 @@ public class ApplicationFormScreen {
             ConsoleUI.printHeader("Update Application - " + app.getApplicationId());
             ConsoleUI.printInfo("Press Enter to keep current value.");
 
-            String address = InputHelper.readOptional("Address [" + app.getAddress() + "]: ",
+            String address = InputHelper.readOptional("Address",
                     app.getAddress(), Validator::validateAddress);
-            String contactNumber = InputHelper.readOptional("Contact number [" + app.getContactNumber() + "]: ",
+            String contactNumber = InputHelper.readOptional("Contact number",
                     app.getContactNumber(), Validator::normalizeContactNumber);
-            String occupation = InputHelper.readOptional("Occupation [" + app.getOccupation() + "]: ",
+            String occupation = InputHelper.readOptional("Occupation",
                     app.getOccupation(), AdoptionApplication::validateOccupation);
 
             LivingSituation livingSituation = app.getLivingSituation();
-            if (InputHelper.readYesNo("Change living situation from " + livingSituation.getLabel() + "? (y/n): ")) {
+            if (InputHelper.readYesNo("Change living situation from " + livingSituation.getLabel() + "?")) {
                 livingSituation = InputHelper.readEnum("Living Situation:", LivingSituation.values());
             }
 
             boolean hasPreviousPets = app.hasPreviousPets();
             String experienceDetails = app.getExperienceDetails();
-            if (InputHelper.readYesNo("Change pet experience info? (current: "
-                    + (hasPreviousPets ? "Yes" : "No") + ") (y/n): ")) {
-                hasPreviousPets = InputHelper.readYesNo("Do you have previous pet experience? (y/n): ");
+            if (InputHelper.readYesNo("Change pet experience info (current: "
+                    + (hasPreviousPets ? "Yes" : "No") + ")?")) {
+                hasPreviousPets = InputHelper.readYesNo("Do you have previous pet experience?");
                 if (hasPreviousPets) {
                     experienceDetails = InputHelper.readValidated("Experience details (10-300 characters): ",
                             input -> Validator.requireLength("Experience details", input, 10, 300));
@@ -129,11 +128,10 @@ public class ApplicationFormScreen {
                 }
             }
 
-            String reason = InputHelper.readOptional("Reason for adoption [" + app.getReason() + "]: ",
+            String reason = InputHelper.readOptional("Reason for adoption",
                     app.getReason(), input -> Validator.requireLength("Reason for adoption", input, 20, 500));
 
             if (!InputHelper.confirm("save changes to application " + app.getApplicationId())) {
-                ConsoleUI.printInfo("Update cancelled.");
                 return;
             }
 

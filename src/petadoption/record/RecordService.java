@@ -101,14 +101,14 @@ public class RecordService {
             throw new ValidationException("Adoption date", "Adoption date cannot be in the future.");
         }
 
+        AdoptionApplication app = null;
         try {
-            ApplicationService appService = new ApplicationService();
-            AdoptionApplication app = appService.getApplicationById(record.getApplicationId());
-            if (app != null && app.getApplicationDate() != null && newDate.isBefore(app.getApplicationDate())) {
-                throw new ValidationException("Adoption date", "Adoption date cannot be before the application date.");
-            }
+            app = new ApplicationService().getApplicationById(record.getApplicationId());
         } catch (PetAdoptionException | UnsupportedOperationException e) {
             // If application lookup is not available, check against future was already done
+        }
+        if (app != null && app.getApplicationDate() != null && newDate.isBefore(app.getApplicationDate())) {
+            throw new ValidationException("Adoption date", "Adoption date cannot be before the application date.");
         }
 
         record.setAdoptionDate(newDate);

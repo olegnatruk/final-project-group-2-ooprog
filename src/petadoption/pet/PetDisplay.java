@@ -11,8 +11,23 @@ import petadoption.util.ConsoleUI;
  */
 public final class PetDisplay {
 
+    /** Shown by every pet-reading option when there are no pets to read. */
+    public static final String NO_PETS_MESSAGE = "No pets listed yet.";
+
     private PetDisplay() {
         // static utility class
+    }
+
+    /**
+     * Prints {@link #NO_PETS_MESSAGE} and returns {@code true} when the current user has no pets to see,
+     * so a menu option can stop before asking for any input.
+     */
+    public static boolean printIfNoPets(PetService petService) {
+        if (petService.hasListedPets()) {
+            return false;
+        }
+        ConsoleUI.printInfo(NO_PETS_MESSAGE);
+        return true;
     }
 
     /** Prints a list of pets as an aligned table: ID, Name, Type, Breed, Age, Gender, Status. */

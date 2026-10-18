@@ -90,3 +90,24 @@ Implemented Phase 1 models, Phase 2 skeletons, and Phase 3 features for the appl
 - Menu wiring: connected `ui/UserMenu` option 2 and `ui/AdminMenu` option 3.
 - DataStore: registered `applications()` repository in `core/DataStore.java`.
 
+## 2026-10-18 — End-to-end test pass and fixes (Kurt, branch `kurt/fix-empty-pet-lists`)
+
+Ran the full app from fresh data through scripted input: register/login guards, add/update/delete pets,
+browse/search/filter/passport, apply → approve → adoption record, statistics, user management, profile,
+corrupted data lines, and an unreadable data file. Fixes (touches every member's package — reviewed by Kurt):
+- New rule: every pet-reading option prints "No pets listed yet." when there are no pets
+  ([BUSINESS-RULES.md](BUSINESS-RULES.md#menu-behaviour-on-empty-or-blocked-actions)).
+- Same for applications: "No applications applied yet." (user's My Applications options 2–5) and
+  "No applications submitted yet." (admin application options 1–7).
+- Blocked actions now fail before the form/confirmation (`checkCanApply`, pet/user `checkCanDelete`,
+  `checkStatusChange`, `checkAccountStatusChange`). Create Record stops early when nothing is approved.
+- Admin Add/Update User and Profile now reject a taken email/username at the prompt
+  (`AuthService.checkNewEmail/checkNewUsername`, shared with Register).
+- Dates re-prompt when out of range (`InputHelper.readDate(prompt, default, min, max)`); the monthly
+  statistics month is limited to past months.
+- Bug: `RecordService.updateRecord` swallowed its own "cannot be before the application date" error, so the
+  rule never applied. Fixed.
+- Password mismatch in Reset Password / Change Password re-asks instead of failing after confirmation.
+- Cosmetic: doubled `(y/n)`, doubled `[default]` in the application form, doubled "Action cancelled.",
+  empty `[]` in Update Pet enum prompts.
+

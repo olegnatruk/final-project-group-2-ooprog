@@ -93,24 +93,37 @@ public class AdoptionRecordMenu extends Menu {
             approvedApps = List.of();
         }
 
-        if (!approvedApps.isEmpty()) {
-            ConsoleUI.printInfo("Approved applications ready for record creation:");
-            String[] headers = {"App ID", "Applicant", "Pet ID", "Date"};
-            List<String[]> rows = new ArrayList<>();
-            for (AdoptionApplication app : approvedApps) {
-                rows.add(new String[] {
-                    app.getApplicationId(),
-                    app.getApplicantName(),
-                    app.getPetId(),
-                    app.getApplicationDate() != null ? app.getApplicationDate().toString() : ""
-                });
-            }
-            ConsoleUI.printTable(headers, rows);
-            ConsoleUI.printDivider();
+        if (approvedApps.isEmpty()) {
+            ConsoleUI.printInfo("No approved applications are waiting for an adoption record.");
+            return;
         }
+        ConsoleUI.printInfo("Approved applications ready for record creation:");
+        String[] headers = {"App ID", "Applicant", "Pet ID", "Date"};
+        List<String[]> rows = new ArrayList<>();
+        for (AdoptionApplication app : approvedApps) {
+            rows.add(new String[] {
+                app.getApplicationId(),
+                app.getApplicantName(),
+                app.getPetId(),
+                app.getApplicationDate() != null ? app.getApplicationDate().toString() : ""
+            });
+        }
+        ConsoleUI.printTable(headers, rows);
+        ConsoleUI.printDivider();
 
         String appId = InputHelper.readId("Application ID: ", "APP");
-        LocalDate adoptionDate = InputHelper.readDate("Adoption date", LocalDate.now());
+        AdoptionApplication selected = null;
+        for (AdoptionApplication app : approvedApps) {
+            if (app.getApplicationId().equalsIgnoreCase(appId)) {
+                selected = app;
+            }
+        }
+        if (selected == null) {
+            ConsoleUI.printError("Application " + appId + " is not an approved application without a record.");
+            return;
+        }
+        LocalDate adoptionDate = InputHelper.readDate("Adoption date", LocalDate.now(),
+                selected.getApplicationDate(), LocalDate.now());
         String notes = InputHelper.readValidated("Notes (optional, max 200 chars): ",
                 input -> {
                     if (input == null || input.isBlank()) {
@@ -137,7 +150,14 @@ public class AdoptionRecordMenu extends Menu {
         String recordId = InputHelper.readId("Enter Record ID: ", "REC");
         AdoptionRecord record = recordService.getRecordById(recordId);
 
-        LocalDate date = InputHelper.readDate("Adoption date", record.getAdoptionDate());
+        LocalDate applicationDate = null;
+        try {
+            applicationDate = applicationService.getApplicationById(record.getApplicationId()).getApplicationDate();
+        } catch (PetAdoptionException e) {
+            // application missing: the service still checks the date is not in the future
+        }
+        LocalDate date = InputHelper.readDate("Adoption date", record.getAdoptionDate(), applicationDate,
+                LocalDate.now());
         String notes = InputHelper.readOptional("Notes", record.getNotes(),
                 input -> {
                     Validator.requireNoDelimiter("Notes", input);
@@ -195,7 +215,7 @@ public class AdoptionRecordMenu extends Menu {
             }
             case 3 -> {
                 LocalDate from = InputHelper.readDate("From date", null);
-                LocalDate to = InputHelper.readDate("To date", null);
+                LocalDate to = InputHelper.readDate("To date", null, from, null);
                 strategy = new RecordDateRangeFilter(from, to);
             }
             case 4 -> {
@@ -214,7 +234,7 @@ public class AdoptionRecordMenu extends Menu {
                 }
                 if (InputHelper.readYesNo("Filter by date range?")) {
                     LocalDate from = InputHelper.readDate("From date", null);
-                    LocalDate to = InputHelper.readDate("To date", null);
+                    LocalDate to = InputHelper.readDate("To date", null, from, null);
                     filters.add(new RecordDateRangeFilter(from, to));
                 }
                 if (InputHelper.readYesNo("Filter by pet type?")) {

@@ -3,6 +3,8 @@ package petadoption.application;
 import java.util.List;
 
 import petadoption.exception.PetAdoptionException;
+import petadoption.pet.PetDisplay;
+import petadoption.pet.PetService;
 import petadoption.ui.Menu;
 import petadoption.util.ConsoleUI;
 import petadoption.util.InputHelper;
@@ -13,6 +15,7 @@ import petadoption.util.InputHelper;
 public class UserApplicationMenu extends Menu {
 
     private final ApplicationService applicationService = new ApplicationService();
+    private final PetService petService = new PetService();
 
     @Override
     protected String getTitle() {
@@ -33,8 +36,16 @@ public class UserApplicationMenu extends Menu {
 
     @Override
     protected boolean handleChoice(int choice) throws PetAdoptionException {
+        // Options 2-5 all read the user's own applications.
+        if (choice >= 2 && choice <= 5 && applicationService.getMyApplications().isEmpty()) {
+            ConsoleUI.printInfo(ApplicationDisplay.NO_MY_APPLICATIONS_MESSAGE);
+            return true;
+        }
         switch (choice) {
             case 1 -> {
+                if (PetDisplay.printIfNoPets(petService)) {
+                    return true;
+                }
                 String petId = InputHelper.readId("Enter Pet ID to apply for (e.g. P0001): ", "P");
                 new ApplicationFormScreen().submitFor(petId);
             }
@@ -64,8 +75,6 @@ public class UserApplicationMenu extends Menu {
                 if (InputHelper.confirm("cancel application " + id)) {
                     applicationService.cancelMyApplication(id);
                     ConsoleUI.printSuccess("Application " + id + " has been cancelled.");
-                } else {
-                    ConsoleUI.printInfo("Action cancelled.");
                 }
             }
             case 6 -> {
