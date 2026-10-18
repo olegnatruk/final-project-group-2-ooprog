@@ -164,16 +164,36 @@ public final class InputHelper {
 
     /** Reads a date as yyyy-MM-dd. If {@code defaultValue} is not null, pressing Enter returns it. */
     public static LocalDate readDate(String prompt, LocalDate defaultValue) {
+        return readDate(prompt, defaultValue, null, null);
+    }
+
+    /**
+     * Reads a date as yyyy-MM-dd that is not before {@code min} and not after {@code max} (either may be null
+     * for no limit). If {@code defaultValue} is not null, pressing Enter returns it.
+     */
+    public static LocalDate readDate(String prompt, LocalDate defaultValue, LocalDate min, LocalDate max) {
         while (true) {
             String suffix = defaultValue == null ? " (yyyy-MM-dd): " : " (yyyy-MM-dd) [" + defaultValue + "]: ";
             String line = readLine(prompt + suffix);
+            LocalDate date;
             if (line.isEmpty() && defaultValue != null) {
-                return defaultValue;
+                date = defaultValue;
+            } else {
+                try {
+                    date = LocalDate.parse(line);
+                } catch (DateTimeParseException e) {
+                    ConsoleUI.printError("Please enter a valid date as yyyy-MM-dd.");
+                    continue;
+                }
             }
-            try {
-                return LocalDate.parse(line);
-            } catch (DateTimeParseException e) {
-                ConsoleUI.printError("Please enter a valid date as yyyy-MM-dd.");
+            if (max != null && date.isAfter(max)) {
+                ConsoleUI.printError(max.equals(LocalDate.now())
+                        ? "Date cannot be in the future."
+                        : "Date cannot be after " + max + ".");
+            } else if (min != null && date.isBefore(min)) {
+                ConsoleUI.printError("Date cannot be before " + min + ".");
+            } else {
+                return date;
             }
         }
     }

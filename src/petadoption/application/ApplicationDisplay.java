@@ -12,6 +12,12 @@ import petadoption.util.ConsoleUI;
  */
 public final class ApplicationDisplay {
 
+    /** Shown by every My Applications option (except Apply) when the user has no applications. */
+    public static final String NO_MY_APPLICATIONS_MESSAGE = "No applications applied yet.";
+
+    /** Shown by every admin application option (except Back) when nobody has applied yet. */
+    public static final String NO_APPLICATIONS_MESSAGE = "No applications submitted yet.";
+
     private ApplicationDisplay() {
         // static utility class
     }

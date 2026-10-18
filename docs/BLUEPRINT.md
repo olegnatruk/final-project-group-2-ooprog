@@ -325,6 +325,8 @@ RegularUser register(String firstName, String lastName, String email, String con
         throws ValidationException, DuplicateRecordException, DataFileException
 ★ boolean isUsernameTaken(String username)
 ★ boolean isEmailTaken(String email, String excludeUserId)
+String checkNewUsername(String input) throws ValidationException      // TextRule: valid + not taken
+String checkNewEmail(String input, String excludeUserId) throws ValidationException  // TextRule: valid + not taken
 boolean ensureDefaultAdmin() throws PetAdoptionException      // true if the admin was created
 ```
 
@@ -380,6 +382,7 @@ private static final Scanner SCANNER = new Scanner(System.in);   // the only one
 ★ static boolean readYesNo(String prompt)
 ★ static <E extends Enum<E>> E readEnum(String prompt, E[] values)
 ★ static LocalDate readDate(String prompt, LocalDate defaultValue)
+static LocalDate readDate(String prompt, LocalDate defaultValue, LocalDate min, LocalDate max)  // re-prompts outside min..max (null = no limit)
 ★ static String readId(String prompt, String prefix)
 ★ static boolean confirm(String action)
 static void pause()                                                // "Press Enter to continue..."
@@ -498,8 +501,10 @@ User addUser(String firstName, String lastName, String email, String contactNumb
 void updateUser(String userId, String firstName, String lastName, String email, String contactNumber,
                 String address) throws PetAdoptionException
 void setAccountStatus(String userId, AccountStatus status) throws PetAdoptionException  // self / last-admin rules
+void checkAccountStatusChange(String userId, AccountStatus status) throws PetAdoptionException  // same rules, called before confirm
 void resetPassword(String userId, String newPassword, String confirmPassword) throws PetAdoptionException
 void deleteUser(String userId) throws PetAdoptionException                              // history rule
+void checkCanDelete(String userId) throws PetAdoptionException                           // same rules, called before confirm
 ```
 
 ### `ProfileMenu.java`, `UserManagementMenu.java` — classes extend `Menu` (Derick)
@@ -586,6 +591,7 @@ Each has `String getLabel()`.
 Pet getVisiblePetById(String petId) throws RecordNotFoundException   // Regular Users: ADOPTED → not found
 ★ List<Pet> getAllPets()                                              // admin
 ★ List<Pet> getVisiblePets()                                          // AVAILABLE + PENDING_ADOPTION
+boolean hasListedPets()                                               // any pet the current user can see (admin: all)
 private final RecordFinder<Pet> finder = new RecordFinder<>();
 ★ List<Pet> search(SearchStrategy<Pet> strategy)   // finder.setStrategy(strategy); finder.find(...)
 
@@ -597,7 +603,9 @@ void updatePet(String petId, String name, String breed, int ageYears, Gender gen
                double weightKg, String description, String healthInfo,
                VaccinationStatus vaccinationStatus, String typeSpecificValue) throws PetAdoptionException
 void deletePet(String petId) throws PetAdoptionException              // ADR-022 check
+void checkCanDelete(String petId) throws PetAdoptionException          // same rule, called before confirm
 void updateStatusManually(String petId, PetStatus newStatus) throws PetAdoptionException  // ADR-014 table
+void checkStatusChange(String petId, PetStatus newStatus) throws PetAdoptionException  // same table, called before confirm
 
 // workflow transitions for Ace and Derick (check current status, then save)
 ★ void markPendingAdoption(String petId) throws PetAdoptionException      // AVAILABLE → PENDING_ADOPTION
@@ -609,6 +617,7 @@ void updateStatusManually(String petId, PetStatus newStatus) throws PetAdoptionE
 ### `PetDisplay.java` — final class, static methods
 ```java
 static void printPetTable(List<Pet> pets)     // ID, Name, Type, Breed, Age, Gender, Status
+static boolean printIfNoPets(PetService petService)  // prints "No pets listed yet." and returns true when none
 static void printPassport(Pet pet)            // every field + pet.getTypeSpecificDetails()
 ```
 Shared by `PetAdminMenu` and `PetBrowseMenu` so the two never format pets differently.
@@ -687,6 +696,7 @@ static final int MAX_PENDING_PER_USER = 3;
 AdoptionApplication submitApplication(String petId, String address, String contactNumber, String occupation,
         LivingSituation livingSituation, boolean hasPreviousPets, String experienceDetails, String reason)
         throws PetAdoptionException
+String checkCanApply(String petId) throws PetAdoptionException  // submit's eligibility checks, run before the form
 List<AdoptionApplication> getMyApplications() throws UnauthorizedAccessException
 AdoptionApplication getMyApplicationById(String applicationId) throws PetAdoptionException  // others' → not found
 void updateMyApplication(String applicationId, String address, String contactNumber, String occupation,

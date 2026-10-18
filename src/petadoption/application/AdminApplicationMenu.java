@@ -42,6 +42,11 @@ public class AdminApplicationMenu extends Menu {
 
     @Override
     protected boolean handleChoice(int choice) throws PetAdoptionException {
+        // Options 1-7 all read application records.
+        if (choice <= 7 && applicationService.getAllApplications().isEmpty()) {
+            ConsoleUI.printInfo(ApplicationDisplay.NO_APPLICATIONS_MESSAGE);
+            return true;
+        }
         switch (choice) {
             case 1 -> {
                 List<AdoptionApplication> list = applicationService.getAllApplications();
@@ -79,7 +84,6 @@ public class AdminApplicationMenu extends Menu {
         }
 
         if (!InputHelper.confirm("approve application " + id)) {
-            ConsoleUI.printInfo("Action cancelled.");
             return;
         }
 
@@ -111,7 +115,6 @@ public class AdminApplicationMenu extends Menu {
         }
 
         if (!InputHelper.confirm("reject application " + id)) {
-            ConsoleUI.printInfo("Action cancelled.");
             return;
         }
 
@@ -140,7 +143,6 @@ public class AdminApplicationMenu extends Menu {
         }
 
         if (!InputHelper.confirm("revoke approval for application " + id)) {
-            ConsoleUI.printInfo("Action cancelled.");
             return;
         }
 
@@ -159,7 +161,6 @@ public class AdminApplicationMenu extends Menu {
         }
 
         if (!InputHelper.confirm("delete application " + id)) {
-            ConsoleUI.printInfo("Action cancelled.");
             return;
         }
 
@@ -193,15 +194,15 @@ public class AdminApplicationMenu extends Menu {
             }
             case 4 -> {
                 List<SearchStrategy<AdoptionApplication>> filters = new ArrayList<>();
-                if (InputHelper.readYesNo("Filter by status? (y/n): ")) {
+                if (InputHelper.readYesNo("Filter by status?")) {
                     ApplicationStatus status = InputHelper.readEnum("Select status:", ApplicationStatus.values());
                     filters.add(new ApplicationStatusFilter(status));
                 }
-                if (InputHelper.readYesNo("Filter by applicant name? (y/n): ")) {
+                if (InputHelper.readYesNo("Filter by applicant name?")) {
                     String kw = InputHelper.readText("Applicant name keyword: ", 1, 50);
                     filters.add(new ApplicantNameSearch(kw));
                 }
-                if (InputHelper.readYesNo("Filter by pet? (y/n): ")) {
+                if (InputHelper.readYesNo("Filter by pet?")) {
                     String kw = InputHelper.readText("Pet ID or name keyword: ", 1, 50);
                     filters.add(new ApplicationPetSearch(kw));
                 }

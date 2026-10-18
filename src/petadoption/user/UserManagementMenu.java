@@ -3,6 +3,7 @@ package petadoption.user;
 import java.util.ArrayList;
 import java.util.List;
 
+import petadoption.auth.AuthService;
 import petadoption.core.AllOfStrategy;
 import petadoption.core.SearchStrategy;
 import petadoption.exception.PetAdoptionException;
@@ -20,6 +21,7 @@ import petadoption.util.Validator;
 public class UserManagementMenu extends Menu {
 
     private final UserService userService = new UserService();
+    private final AuthService authService = new AuthService();
 
     @Override
     protected String getTitle() {
@@ -82,13 +84,13 @@ public class UserManagementMenu extends Menu {
         String lastName = InputHelper.readValidated("Last name: ",
                 input -> Validator.validateName("Last name", input));
         String email = InputHelper.readValidated("Email: ",
-                Validator::validateEmail);
+                input -> authService.checkNewEmail(input, null));
         String contact = InputHelper.readValidated("Contact number: ",
                 Validator::normalizeContactNumber);
         String address = InputHelper.readValidated("Address: ",
                 Validator::validateAddress);
         String username = InputHelper.readValidated("Username: ",
-                Validator::validateUsername);
+                authService::checkNewUsername);
         String password = InputHelper.readValidated("Password: ",
                 input -> Validator.validatePassword(input, username));
 
@@ -110,7 +112,7 @@ public class UserManagementMenu extends Menu {
         String lastName = InputHelper.readOptional("Last name", user.getLastName(),
                 input -> Validator.validateName("Last name", input));
         String email = InputHelper.readOptional("Email", user.getEmail(),
-                Validator::validateEmail);
+                input -> authService.checkNewEmail(input, user.getUserId()));
         String contact = InputHelper.readOptional("Contact number", user.getContactNumber(),
                 Validator::normalizeContactNumber);
         String address = InputHelper.readOptional("Address", user.getAddress(),
@@ -131,6 +133,7 @@ public class UserManagementMenu extends Menu {
 
         AccountStatus newStatus = user.isActive() ? AccountStatus.DISABLED : AccountStatus.ACTIVE;
         String action = newStatus == AccountStatus.ACTIVE ? "enable" : "disable";
+        userService.checkAccountStatusChange(userId, newStatus);
 
         if (!InputHelper.confirm(action + " user " + userId + " (" + user.getUsername() + ")")) {
             return;
@@ -145,10 +148,17 @@ public class UserManagementMenu extends Menu {
         String userId = InputHelper.readId("Enter User ID: ", "U");
         User user = userService.getUserById(userId);
 
-        String newPassword = InputHelper.readValidated("New password: ",
-                input -> Validator.validatePassword(input, user.getUsername()));
-        String confirmPassword = InputHelper.readValidated("Confirm new password: ",
-                input -> Validator.requireNotBlank("Confirm new password", input));
+        String newPassword;
+        String confirmPassword;
+        while (true) {
+            newPassword = InputHelper.readValidated("New password: ",
+                    input -> Validator.validatePassword(input, user.getUsername()));
+            confirmPassword = InputHelper.readText("Confirm new password: ");
+            if (newPassword.equals(confirmPassword)) {
+                break;
+            }
+            ConsoleUI.printError("Passwords do not match. Please try again.");
+        }
 
         if (!InputHelper.confirm("reset password for user " + userId)) {
             return;
@@ -162,6 +172,7 @@ public class UserManagementMenu extends Menu {
         ConsoleUI.printHeader("Delete User");
         String userId = InputHelper.readId("Enter User ID: ", "U");
         User user = userService.getUserById(userId);
+        userService.checkCanDelete(userId);
 
         if (!InputHelper.confirm("permanently delete user " + userId + " (" + user.getUsername() + ")")) {
             return;

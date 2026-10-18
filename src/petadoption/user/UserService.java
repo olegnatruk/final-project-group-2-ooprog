@@ -115,6 +115,16 @@ public class UserService {
     }
 
     public void setAccountStatus(String userId, AccountStatus status) throws PetAdoptionException {
+        checkAccountStatusChange(userId, status);
+        users.getById(userId).setAccountStatus(status);
+        users.save();
+    }
+
+    /**
+     * Throws if the account cannot be set to this status, so the menu can stop before asking for confirmation.
+     * {@link #setAccountStatus} runs the same check again.
+     */
+    public void checkAccountStatusChange(String userId, AccountStatus status) throws PetAdoptionException {
         User admin = session.requireAdmin();
         User target = users.getById(userId);
 
@@ -133,9 +143,6 @@ public class UserService {
                 throw new ValidationException("Account status", "Cannot disable the last active administrator.");
             }
         }
-
-        target.setAccountStatus(status);
-        users.save();
     }
 
     public void resetPassword(String userId, String newPassword, String confirmPassword)
@@ -152,6 +159,16 @@ public class UserService {
     }
 
     public void deleteUser(String userId) throws PetAdoptionException {
+        checkCanDelete(userId);
+        users.remove(users.getById(userId).getUserId());
+        users.save();
+    }
+
+    /**
+     * Throws if the user cannot be deleted (own account, last admin, or adoption history), so the menu can stop
+     * before asking for confirmation. {@link #deleteUser} runs the same check again.
+     */
+    public void checkCanDelete(String userId) throws PetAdoptionException {
         User admin = session.requireAdmin();
         User target = users.getById(userId);
 
@@ -176,9 +193,6 @@ public class UserService {
         } catch (UnsupportedOperationException e) {
             // If ApplicationService is a skeleton, we don't block deletion based on unimplemented apps check
         }
-
-        users.remove(target.getUserId());
-        users.save();
     }
 
     // ------------------------------------------------------------------ helpers

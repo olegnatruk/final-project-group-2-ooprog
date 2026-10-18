@@ -120,6 +120,22 @@ Deleting a `PENDING` application never changes the pet's status (only approval d
 
 ---
 
+## Menu behaviour on empty or blocked actions
+
+- **No pets to read.** Every menu option that reads pet records prints `[INFO] No pets listed yet.` and returns
+  before asking for any input when the current user has no pet to see (Admins: no pets at all; Regular Users:
+  no Available or Pending Adoption pet). Covers Browse Pets options 1–4, Manage Pets options 1, 2, 4, 5, 6, 7,
+  and My Applications → Apply for a pet. Add Pet is not blocked.
+- **No applications to read.** My Applications options 2–5 print `[INFO] No applications applied yet.` when the
+  logged-in user has no applications. Manage Adoption Applications options 1–7 print
+  `[INFO] No applications submitted yet.` when nobody has applied. Apply for a pet is not blocked.
+- **Fail before the form, not after.** When an action is not allowed (apply for a pet you can't apply for,
+  delete a pet/user with history, a blocked status change, disabling yourself or the last admin), the menu
+  runs the service's `check…` method first, so the error shows before any form fields or the "Are you sure?"
+  prompt. The service still re-checks when the action runs.
+- Taken emails/usernames, future or too-early dates, and password mismatches are rejected at the prompt and
+  re-asked, not after the whole form.
+
 ## Role access
 
 | Feature | Regular User | Admin | Owner (member) |

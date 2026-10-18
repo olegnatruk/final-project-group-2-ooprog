@@ -78,23 +78,12 @@ public class WelcomeMenu extends Menu {
                 input -> Validator.validateName("First name", input));
         String lastName = InputHelper.readValidated("Last name: ",
                 input -> Validator.validateName("Last name", input));
-        String email = InputHelper.readValidated("Email: ", input -> {
-            String cleaned = Validator.validateEmail(input);
-            if (authService.isEmailTaken(cleaned, null)) {
-                throw new ValidationException("Email", "Email is already registered.");
-            }
-            return cleaned;
-        });
+        String email = InputHelper.readValidated("Email: ", input -> authService.checkNewEmail(input, null));
         String contactNumber = InputHelper.readValidated("Contact number (e.g. 09171234567): ",
                 Validator::normalizeContactNumber);
         String address = InputHelper.readValidated("Address: ", Validator::validateAddress);
-        String username = InputHelper.readValidated("Username (4-20 letters, digits, or _): ", input -> {
-            String cleaned = Validator.validateUsername(input);
-            if (authService.isUsernameTaken(cleaned)) {
-                throw new ValidationException("Username", "Username is already taken.");
-            }
-            return cleaned;
-        });
+        String username = InputHelper.readValidated("Username (4-20 letters, digits, or _): ",
+                authService::checkNewUsername);
 
         String password;
         while (true) {

@@ -131,6 +131,31 @@ public class AuthService {
     }
 
     /**
+     * Validates a username and checks no account uses it yet. Used as a {@code TextRule} so every form
+     * rejects a taken username at the prompt instead of after the whole form.
+     */
+    public String checkNewUsername(String input) throws ValidationException {
+        String cleaned = Validator.validateUsername(input);
+        if (isUsernameTaken(cleaned)) {
+            throw new ValidationException("Username", "Username is already taken.");
+        }
+        return cleaned;
+    }
+
+    /**
+     * Validates an email and checks no other account uses it. Used as a {@code TextRule}.
+     *
+     * @param excludeUserId the account being edited, which may keep its own email; {@code null} when creating
+     */
+    public String checkNewEmail(String input, String excludeUserId) throws ValidationException {
+        String cleaned = Validator.validateEmail(input);
+        if (isEmailTaken(cleaned, excludeUserId)) {
+            throw new ValidationException("Email", "Email is already registered.");
+        }
+        return cleaned;
+    }
+
+    /**
      * Creates the default admin (ADR-007) when no admin account exists, so the system is always usable.
      *
      * @return {@code true} if the admin was created now

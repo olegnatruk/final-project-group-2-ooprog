@@ -41,6 +41,26 @@ public class ApplicationService {
             String occupation, LivingSituation livingSituation, boolean hasPreviousPets,
             String experienceDetails, String reason) throws PetAdoptionException {
         User user = session.requireRegularUser();
+        String normalizedPetId = checkCanApply(petId);
+
+        String appId = applications.nextId();
+        AdoptionApplication newApp = new AdoptionApplication(appId, user.getUserId(), normalizedPetId,
+                user.getFullName(), address, contactNumber, occupation, livingSituation,
+                hasPreviousPets, experienceDetails, reason);
+
+        applications.add(newApp);
+        applications.save();
+        return newApp;
+    }
+
+    /**
+     * Checks that the logged-in regular user may apply for this pet, so the form can stop before asking for
+     * any input. {@link #submitApplication} runs the same checks again.
+     *
+     * @return the normalized pet ID
+     */
+    public String checkCanApply(String petId) throws PetAdoptionException {
+        User user = session.requireRegularUser();
 
         String normalizedPetId = Validator.requireMatches("Pet ID", petId, "P\\d{4}",
                 "Pet ID must look like P0001.");
@@ -82,15 +102,7 @@ public class ApplicationService {
             throw new ValidationException("Application limit",
                     "You cannot have more than " + MAX_PENDING_PER_USER + " pending applications at once.");
         }
-
-        String appId = applications.nextId();
-        AdoptionApplication newApp = new AdoptionApplication(appId, user.getUserId(), normalizedPetId,
-                user.getFullName(), address, contactNumber, occupation, livingSituation,
-                hasPreviousPets, experienceDetails, reason);
-
-        applications.add(newApp);
-        applications.save();
-        return newApp;
+        return normalizedPetId;
     }
 
     /**

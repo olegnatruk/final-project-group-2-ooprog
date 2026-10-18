@@ -69,6 +69,14 @@ public class PetService {
     }
 
     /**
+     * Whether the current user has any pet to see: any pet for Admins, any visible pet for Regular Users.
+     * Menus check this before every pet-reading option so an empty shelter shows one clear message.
+     */
+    public boolean hasListedPets() {
+        return isAdminLoggedIn() ? !getAllPets().isEmpty() : !getVisiblePets().isEmpty();
+    }
+
+    /**
      * Searches pets using the given strategy. Swaps the strategy on {@link #finder} at runtime (ADR-032).
      * Regular users only search among visible pets; admins search all pets. Contract method.
      */
@@ -129,21 +137,38 @@ public class PetService {
      * Deletes a pet. Blocked if the pet has any application (any status) or adoption record (ADR-022).
      */
     public void deletePet(String petId) throws PetAdoptionException {
+        checkCanDelete(petId);
+        pets.remove(petId);
+        pets.save();
+    }
+
+    /**
+     * Throws if the pet cannot be deleted (ADR-022), so the menu can stop before asking for confirmation.
+     * {@link #deletePet} runs the same check again.
+     */
+    public void checkCanDelete(String petId) throws PetAdoptionException {
         SessionManager.getInstance().requireAdmin();
         Pet pet = getPetById(petId);
 
         if (hasAnyApplicationForPet(pet.getPetId()) || new RecordService().hasRecordForPet(pet.getPetId())) {
             throw new InvalidStatusTransitionException("Pet has adoption history. Update its status instead.");
         }
-
-        pets.remove(petId);
-        pets.save();
     }
 
     /**
      * Admin manual status update. Consistency-checked against application and record data (ADR-014 table).
      */
     public void updateStatusManually(String petId, PetStatus newStatus) throws PetAdoptionException {
+        checkStatusChange(petId, newStatus);
+        getPetById(petId).setStatus(newStatus);
+        pets.save();
+    }
+
+    /**
+     * Throws if an admin may not set this status by hand (ADR-014 table), so the menu can stop before asking
+     * for confirmation. {@link #updateStatusManually} runs the same check again.
+     */
+    public void checkStatusChange(String petId, PetStatus newStatus) throws PetAdoptionException {
         SessionManager.getInstance().requireAdmin();
         Pet pet = getPetById(petId);
 
@@ -181,9 +206,6 @@ public class PetService {
                 }
             }
         }
-
-        pet.setStatus(newStatus);
-        pets.save();
     }
 
     // ------------------------------------------------------------------ workflow transitions (Ace, Derick)

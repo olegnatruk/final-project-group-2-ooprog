@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import petadoption.exception.PetAdoptionException;
-import petadoption.exception.ValidationException;
 import petadoption.ui.Menu;
 import petadoption.util.ConsoleUI;
 import petadoption.util.InputHelper;
@@ -52,11 +51,8 @@ public class StatisticsMenu extends Menu {
         int currentMonth = LocalDate.now().getMonthValue();
 
         int year = InputHelper.readInt("Enter year (2000-" + currentYear + "): ", 2000, currentYear);
-        int month = InputHelper.readInt("Enter month (1-12): ", 1, 12);
-
-        if (year == currentYear && month > currentMonth) {
-            throw new ValidationException("Month", "Statistics month cannot be in the future.");
-        }
+        int maxMonth = (year == currentYear) ? currentMonth : 12;
+        int month = InputHelper.readInt("Enter month (1-" + maxMonth + "): ", 1, maxMonth);
 
         MonthlyStatisticsStrategy monthlyStrategy = new MonthlyStatisticsStrategy(year, month);
         statisticsService.setStrategy(monthlyStrategy);
