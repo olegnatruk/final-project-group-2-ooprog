@@ -1,10 +1,10 @@
 package petadoption.pet;
 
-import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import petadoption.application.ApplicationService;
 import petadoption.auth.SessionManager;
 import petadoption.core.DataStore;
 import petadoption.core.RecordFinder;
@@ -150,7 +150,9 @@ public class PetService {
         SessionManager.getInstance().requireAdmin();
         Pet pet = getPetById(petId);
 
-        if (hasAnyApplicationForPet(pet.getPetId()) || new RecordService().hasRecordForPet(pet.getPetId())) {
+        // Created here, not as a field: ApplicationService already holds a PetService.
+        if (new ApplicationService().hasAnyApplicationForPet(pet.getPetId())
+                || new RecordService().hasRecordForPet(pet.getPetId())) {
             throw new InvalidStatusTransitionException("Pet has adoption history. Update its status instead.");
         }
     }
@@ -179,7 +181,7 @@ public class PetService {
             throw new ValidationException("Status", "Pet is already " + newStatus.getLabel() + ".");
         }
 
-        boolean hasApprovedApp = hasApprovedApplicationForPet(petId);
+        boolean hasApprovedApp = new ApplicationService().hasApprovedApplicationForPet(petId);
         boolean hasRecord = new RecordService().hasRecordForPet(petId);
 
         switch (newStatus) {
@@ -263,45 +265,5 @@ public class PetService {
     private boolean isAdminLoggedIn() {
         User user = SessionManager.getInstance().getCurrentUser();
         return user != null && user.getRole() == Role.ADMIN;
-    }
-
-    /**
-     * Cross-check with Ace's ApplicationService. If Ace's skeleton/service is not yet merged, returns
-     * {@code false} gracefully.
-     */
-    private boolean hasAnyApplicationForPet(String petId) {
-        if (petId == null) {
-            return false;
-        }
-        try {
-            Class<?> clazz = Class.forName("petadoption.application.ApplicationService");
-            Object service = clazz.getConstructor().newInstance();
-            Method method = clazz.getMethod("hasAnyApplicationForPet", String.class);
-            return (boolean) method.invoke(service, petId);
-        } catch (ClassNotFoundException e) {
-            return false;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * Cross-check with Ace's ApplicationService. If Ace's skeleton/service is not yet merged, returns
-     * {@code false} gracefully.
-     */
-    private boolean hasApprovedApplicationForPet(String petId) {
-        if (petId == null) {
-            return false;
-        }
-        try {
-            Class<?> clazz = Class.forName("petadoption.application.ApplicationService");
-            Object service = clazz.getConstructor().newInstance();
-            Method method = clazz.getMethod("hasApprovedApplicationForPet", String.class);
-            return (boolean) method.invoke(service, petId);
-        } catch (ClassNotFoundException e) {
-            return false;
-        } catch (Exception e) {
-            return false;
-        }
     }
 }

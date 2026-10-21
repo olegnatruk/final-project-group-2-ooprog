@@ -3,6 +3,7 @@ package petadoption.application;
 import java.util.ArrayList;
 import java.util.List;
 
+import petadoption.exception.RecordNotFoundException;
 import petadoption.pet.Pet;
 import petadoption.pet.PetService;
 import petadoption.util.ConsoleUI;
@@ -39,8 +40,8 @@ public final class ApplicationDisplay {
                 if (pet != null && pet.getName() != null) {
                     petDisplay = pet.getName() + " (" + app.getPetId() + ")";
                 }
-            } catch (Exception e) {
-                // keep petId if PetService throws UnsupportedOperationException or RecordNotFoundException
+            } catch (RecordNotFoundException e) {
+                // pet was deleted: show the pet ID only
             }
 
             rows.add(new String[] {
@@ -68,8 +69,8 @@ public final class ApplicationDisplay {
             if (pet != null && pet.getName() != null) {
                 petDisplay = pet.getName() + " (" + app.getPetId() + ")";
             }
-        } catch (Exception e) {
-            // keep petId
+        } catch (RecordNotFoundException e) {
+            // pet was deleted: show the pet ID only
         }
 
         ConsoleUI.printHeader("Application Details - " + app.getApplicationId());

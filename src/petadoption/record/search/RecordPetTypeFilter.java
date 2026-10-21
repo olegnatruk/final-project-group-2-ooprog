@@ -32,7 +32,7 @@ public class RecordPetTypeFilter implements SearchStrategy<AdoptionRecord> {
         try {
             Pet pet = petService.getPetById(item.getPetId());
             return pet.getType() == type;
-        } catch (RecordNotFoundException | UnsupportedOperationException e) {
+        } catch (RecordNotFoundException e) {
             return false;
         }
     }

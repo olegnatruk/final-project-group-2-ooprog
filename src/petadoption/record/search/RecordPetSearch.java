@@ -34,7 +34,7 @@ public class RecordPetSearch implements SearchStrategy<AdoptionRecord> {
         try {
             Pet pet = petService.getPetById(item.getPetId());
             return pet.getName().toLowerCase().contains(keyword);
-        } catch (RecordNotFoundException | UnsupportedOperationException e) {
+        } catch (RecordNotFoundException e) {
             return false;
         }
     }

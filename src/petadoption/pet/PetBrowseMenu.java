@@ -1,9 +1,9 @@
 package petadoption.pet;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import petadoption.application.ApplicationFormScreen;
 import petadoption.auth.SessionManager;
 import petadoption.core.AllOfStrategy;
 import petadoption.core.SearchStrategy;
@@ -142,7 +142,7 @@ public class PetBrowseMenu extends Menu {
         User currentUser = SessionManager.getInstance().getCurrentUser();
         if (currentUser != null && currentUser.getRole() == Role.REGULAR_USER && pet.isAvailable()) {
             if (InputHelper.readYesNo("Apply for this pet?")) {
-                openApplicationForm(pet.getPetId());
+                new ApplicationFormScreen().submitFor(pet.getPetId());
             }
         }
     }
@@ -152,22 +152,5 @@ public class PetBrowseMenu extends Menu {
     private boolean isAdmin() {
         User user = SessionManager.getInstance().getCurrentUser();
         return user != null && user.getRole() == Role.ADMIN;
-    }
-
-    /**
-     * Calls Ace's ApplicationFormScreen.submitFor(petId). If Ace's code is not yet merged, shows a
-     * friendly notification.
-     */
-    private void openApplicationForm(String petId) {
-        try {
-            Class<?> clazz = Class.forName("petadoption.application.ApplicationFormScreen");
-            Object form = clazz.getConstructor().newInstance();
-            Method method = clazz.getMethod("submitFor", String.class);
-            method.invoke(form, petId);
-        } catch (ClassNotFoundException e) {
-            ConsoleUI.printInfo("Coming soon - Adoption Applications (Ace).");
-        } catch (Exception e) {
-            ConsoleUI.printError("Could not open application form: " + e.getMessage());
-        }
     }
 }

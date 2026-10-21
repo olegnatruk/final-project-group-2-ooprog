@@ -24,6 +24,8 @@ Section: **C2B**
 
 ## Course requirements checklist
 
+Step-by-step demo, exact file/line for each requirement, and who presents what: [docs/DEMO-GUIDE.md](docs/DEMO-GUIDE.md).
+
 | Requirement | Where it is satisfied |
 |---|---|
 | Login | `auth` package — single login screen with role routing ([ADR-006](docs/DECISIONS.md)) |

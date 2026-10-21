@@ -280,7 +280,7 @@ Unchecked exceptions are only the JDK's own, and each is either caught where it 
 | `IllegalArgumentException` (`Enum.valueOf`) | Parsers | Caught (multi-catch): skip line |
 | `ArrayIndexOutOfBoundsException` | Parsers (too few fields) | Caught (multi-catch): skip line |
 | `NoSuchElementException` | `InputHelper` when input ends | Caught: exit cleanly |
-| `UnsupportedOperationException` | Skeleton methods (Phase 2) | Programming error — removed before final |
+| `UnsupportedOperationException` | Skeleton methods (Phase 2) | Programming error — all skeleton code and its catch blocks removed 2026-10-21 |
 | `NullPointerException` | Anywhere | Programming error — never caught on purpose; `Main`'s safety net reports it |
 
 **Consequences.** No custom unchecked exceptions. Never catch `Throwable` or `Error`.

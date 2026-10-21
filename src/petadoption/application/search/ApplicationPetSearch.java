@@ -2,6 +2,7 @@ package petadoption.application.search;
 
 import petadoption.application.AdoptionApplication;
 import petadoption.core.SearchStrategy;
+import petadoption.exception.RecordNotFoundException;
 import petadoption.pet.Pet;
 import petadoption.pet.PetService;
 
@@ -36,8 +37,8 @@ public class ApplicationPetSearch implements SearchStrategy<AdoptionApplication>
             if (pet != null && pet.getName() != null && pet.getName().toLowerCase().contains(cleanKeyword)) {
                 return true;
             }
-        } catch (Exception e) {
-            // Pet not found or PetService skeleton throws UnsupportedOperationException
+        } catch (RecordNotFoundException e) {
+            // pet was deleted: match on the pet ID only
         }
         return false;
     }

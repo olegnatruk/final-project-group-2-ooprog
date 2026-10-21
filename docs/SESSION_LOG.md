@@ -111,3 +111,16 @@ corrupted data lines, and an unreadable data file. Fixes (touches every member's
 - Cosmetic: doubled `(y/n)`, doubled `[default]` in the application form, doubled "Action cancelled.",
   empty `[]` in Update Pet enum prompts.
 
+## 2026-10-21 — Remove skeleton leftovers, add demo guide (Kurt, branch `simplier-code`)
+
+Goal: make the code easier to explain at the defense without changing behaviour.
+- Removed Java reflection (`Class.forName` / `invoke`) in `PetService` and `PetBrowseMenu`. They now call
+  `ApplicationService` and `ApplicationFormScreen` directly. `PetService` creates `ApplicationService` inside the
+  method, not as a field, because `ApplicationService` already holds a `PetService`.
+- Removed every `catch (UnsupportedOperationException ...)`. Nothing throws it since the skeletons were replaced
+  ([DECISIONS.md](DECISIONS.md) exception table). `catch (Exception e)` around pet lookups narrowed to
+  `RecordNotFoundException`. About 100 lines gone across pet, application, record and user packages.
+- New [DEMO-GUIDE.md](DEMO-GUIDE.md): each requirement → file/line → what to type, a 5-minute demo script, and
+  who presents what. Every "Show" step was run against the app.
+- Verified: clean compile with `-Xlint:all`; scripted runs of apply-from-passport, approve, create/delete
+  record, statistics, delete-pet / status-change / delete-user blocks, and the demo script.

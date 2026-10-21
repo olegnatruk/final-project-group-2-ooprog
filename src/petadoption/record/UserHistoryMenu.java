@@ -59,7 +59,7 @@ public class UserHistoryMenu extends Menu {
                 petName = pet.getName();
                 petType = pet.getType().getLabel();
                 breed = pet.getBreed();
-            } catch (PetAdoptionException | UnsupportedOperationException e) {
+            } catch (PetAdoptionException e) {
                 // keep defaults
             }
 
@@ -101,7 +101,7 @@ public class UserHistoryMenu extends Menu {
         try {
             Pet p = petService.getPetById(record.getPetId());
             petStr = p.getName() + " (" + p.getType().getLabel() + " - " + p.getBreed() + ", ID: " + p.getId() + ")";
-        } catch (PetAdoptionException | UnsupportedOperationException e) {
+        } catch (PetAdoptionException e) {
             // keep
         }
         ConsoleUI.printField("Adopted Pet", petStr);

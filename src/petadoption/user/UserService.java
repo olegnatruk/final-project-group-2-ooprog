@@ -185,13 +185,8 @@ public class UserService {
             throw new InvalidStatusTransitionException("User has adoption records. Disable the account instead.");
         }
 
-        try {
-            ApplicationService appService = new ApplicationService();
-            if (appService.hasAnyApplicationForUser(target.getUserId())) {
-                throw new InvalidStatusTransitionException("User has adoption applications. Disable the account instead.");
-            }
-        } catch (UnsupportedOperationException e) {
-            // If ApplicationService is a skeleton, we don't block deletion based on unimplemented apps check
+        if (new ApplicationService().hasAnyApplicationForUser(target.getUserId())) {
+            throw new InvalidStatusTransitionException("User has adoption applications. Disable the account instead.");
         }
     }
 

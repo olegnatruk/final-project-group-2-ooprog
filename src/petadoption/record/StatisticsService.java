@@ -41,12 +41,7 @@ public class StatisticsService {
             throw new ValidationException("Strategy", "No statistics strategy has been set.");
         }
 
-        List<AdoptionApplication> applications;
-        try {
-            applications = applicationService.getAllApplications();
-        } catch (UnsupportedOperationException e) {
-            applications = List.of();
-        }
+        List<AdoptionApplication> applications = applicationService.getAllApplications();
 
         List<AdoptionRecord> records = DataStore.getInstance().records().findAll();
 

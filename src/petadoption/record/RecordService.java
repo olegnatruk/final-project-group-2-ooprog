@@ -59,13 +59,7 @@ public class RecordService {
             throw new ValidationException("Adoption date", "Adoption date cannot be in the future.");
         }
 
-        ApplicationService appService = new ApplicationService();
-        AdoptionApplication app;
-        try {
-            app = appService.getApplicationById(applicationId);
-        } catch (UnsupportedOperationException e) {
-            throw new InvalidStatusTransitionException("Application service is not yet available.");
-        }
+        AdoptionApplication app = new ApplicationService().getApplicationById(applicationId);
 
         if (app.getStatus() != ApplicationStatus.APPROVED) {
             throw new InvalidStatusTransitionException("Application must be Approved to create an adoption record.");
@@ -82,11 +76,7 @@ public class RecordService {
         records.add(record);
         records.save();
 
-        try {
-            petService.markAdopted(app.getPetId());
-        } catch (UnsupportedOperationException e) {
-            // PetService skeleton may not have transitioned status yet
-        }
+        petService.markAdopted(app.getPetId());
 
         return record;
     }
@@ -104,8 +94,8 @@ public class RecordService {
         AdoptionApplication app = null;
         try {
             app = new ApplicationService().getApplicationById(record.getApplicationId());
-        } catch (PetAdoptionException | UnsupportedOperationException e) {
-            // If application lookup is not available, check against future was already done
+        } catch (PetAdoptionException e) {
+            // The application was deleted; only the future-date check above applies.
         }
         if (app != null && app.getApplicationDate() != null && newDate.isBefore(app.getApplicationDate())) {
             throw new ValidationException("Adoption date", "Adoption date cannot be before the application date.");
@@ -125,11 +115,7 @@ public class RecordService {
         records.remove(recordId);
         records.save();
 
-        try {
-            petService.revertToPendingAdoption(petId);
-        } catch (UnsupportedOperationException e) {
-            // PetService skeleton
-        }
+        petService.revertToPendingAdoption(petId);
     }
 
     public List<AdoptionRecord> search(SearchStrategy<AdoptionRecord> strategy)

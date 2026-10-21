@@ -65,14 +65,7 @@ public class ApplicationService {
         String normalizedPetId = Validator.requireMatches("Pet ID", petId, "P\\d{4}",
                 "Pet ID must look like P0001.");
 
-        // Check pet existence through PetService if available
-        try {
-            petService.getPetById(normalizedPetId);
-        } catch (RecordNotFoundException e) {
-            throw e;
-        } catch (UnsupportedOperationException e) {
-            // Skeleton handling
-        }
+        petService.getPetById(normalizedPetId); // throws RecordNotFoundException if the pet does not exist
 
         if (recordService.hasRecordForPet(normalizedPetId)) {
             throw new InvalidStatusTransitionException("Pet " + normalizedPetId + " is already adopted.");
@@ -213,11 +206,7 @@ public class ApplicationService {
 
         app.approve();
 
-        try {
-            petService.markPendingAdoption(app.getPetId());
-        } catch (UnsupportedOperationException e) {
-            // Skeleton handling
-        }
+        petService.markPendingAdoption(app.getPetId());
 
         // Auto-reject every other pending application for the same pet (ADR-013)
         int autoRejectedCount = 0;
@@ -271,11 +260,7 @@ public class ApplicationService {
 
         app.revokeApproval(reason);
 
-        try {
-            petService.markAvailable(app.getPetId());
-        } catch (UnsupportedOperationException e) {
-            // Skeleton handling
-        }
+        petService.markAvailable(app.getPetId());
 
         applications.save();
     }

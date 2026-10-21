@@ -86,12 +86,7 @@ public class AdoptionRecordMenu extends Menu {
     private void createRecord() throws PetAdoptionException {
         ConsoleUI.printHeader("Create Adoption Record");
 
-        List<AdoptionApplication> approvedApps;
-        try {
-            approvedApps = applicationService.getApprovedApplicationsWithoutRecord();
-        } catch (UnsupportedOperationException e) {
-            approvedApps = List.of();
-        }
+        List<AdoptionApplication> approvedApps = applicationService.getApprovedApplicationsWithoutRecord();
 
         if (approvedApps.isEmpty()) {
             ConsoleUI.printInfo("No approved applications are waiting for an adoption record.");
@@ -274,7 +269,7 @@ public class AdoptionRecordMenu extends Menu {
             try {
                 Pet p = petService.getPetById(r.getPetId());
                 petName = p.getName() + " (" + r.getPetId() + ")";
-            } catch (PetAdoptionException | UnsupportedOperationException e) {
+            } catch (PetAdoptionException e) {
                 // keep petId
             }
 
@@ -307,7 +302,7 @@ public class AdoptionRecordMenu extends Menu {
         try {
             Pet p = petService.getPetById(record.getPetId());
             petStr = p.getName() + " (" + p.getType().getLabel() + " - " + p.getBreed() + ", ID: " + p.getId() + ")";
-        } catch (PetAdoptionException | UnsupportedOperationException e) {
+        } catch (PetAdoptionException e) {
             // keep
         }
         ConsoleUI.printField("Pet", petStr);

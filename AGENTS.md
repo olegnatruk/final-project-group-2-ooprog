@@ -41,6 +41,7 @@ Each member folder also has `TASKS.md` (checklist), `NOTES.md` (member-specific 
 | Something looks wrong or you want to change the design | [`docs/DECISIONS.md`](docs/DECISIONS.md) |
 | Debugging something that "should work" | [`docs/GOTCHAS.md`](docs/GOTCHAS.md) |
 | Original feature spec (verbatim) | [`docs/reference/GROUP2-SPEC.md`](docs/reference/GROUP2-SPEC.md) — `DECISIONS.md` overrides it |
+| Preparing the defense demo / "where is requirement X?" | [`docs/DEMO-GUIDE.md`](docs/DEMO-GUIDE.md) |
 | What happened recently | [`docs/SESSION_LOG.md`](docs/SESSION_LOG.md) + the member's `SESSION_LOG.md` |
 
 ---
