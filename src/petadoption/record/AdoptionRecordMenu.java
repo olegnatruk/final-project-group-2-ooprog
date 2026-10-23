@@ -151,7 +151,7 @@ public class AdoptionRecordMenu extends Menu {
         } catch (PetAdoptionException e) {
             // application missing: the service still checks the date is not in the future
         }
-        LocalDate date = InputHelper.readDate("Adoption date", record.getAdoptionDate(), applicationDate,
+        LocalDate date = InputHelper.readDateForUpdate("Adoption date", record.getAdoptionDate(), applicationDate,
                 LocalDate.now());
         String notes = InputHelper.readOptional("Notes", record.getNotes(),
                 input -> {

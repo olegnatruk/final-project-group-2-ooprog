@@ -151,7 +151,7 @@ public class PetAdminMenu extends Menu {
             try {
                 int parsed = Integer.parseInt(input);
                 Pet.validateAge(parsed, pet.getMaxAgeYears(), pet.getType().getLabel());
-                return input;
+                return String.valueOf(parsed);
             } catch (NumberFormatException e) {
                 throw new ValidationException("Age", "Please enter a whole number.");
             }
@@ -165,7 +165,7 @@ public class PetAdminMenu extends Menu {
             try {
                 double parsed = Double.parseDouble(input);
                 Pet.validateWeight(parsed, pet.getMaxWeightKg(), pet.getType().getLabel());
-                return input;
+                return String.valueOf(parsed);
             } catch (NumberFormatException e) {
                 throw new ValidationException("Weight", "Please enter a valid number.");
             }
@@ -321,6 +321,9 @@ public class PetAdminMenu extends Menu {
             try {
                 int choice = Integer.parseInt(input);
                 if (choice >= 1 && choice <= values.length) {
+                    if (values[choice - 1] == currentValue) {
+                        throw new ValidationException(prompt, prompt + " is already " + keep + ".");
+                    }
                     return input;
                 }
             } catch (NumberFormatException e) {
@@ -337,6 +340,9 @@ public class PetAdminMenu extends Menu {
         String answer = InputHelper.readOptional(prompt + " (y/n)", currentLabel, input -> {
             String lower = input.toLowerCase();
             if (lower.equals("y") || lower.equals("yes") || lower.equals("n") || lower.equals("no")) {
+                if (lower.startsWith("y") == currentValue) {
+                    throw new ValidationException(prompt, prompt + " is already " + (currentValue ? "Yes" : "No") + ".");
+                }
                 return lower;
             }
             throw new ValidationException(prompt, "Please enter y or n.");

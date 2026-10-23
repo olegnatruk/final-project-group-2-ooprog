@@ -106,13 +106,29 @@ public final class InputHelper {
 
     /**
      * For update forms: shows the current value; pressing Enter keeps it, anything else is checked with
-     * {@code rule}.
+     * {@code rule}. Typing the current value again is refused ("First name is already Kurt."), because it is
+     * not a change. {@code rule} must return the value in the same form as {@code currentValue}.
      */
     public static String readOptional(String prompt, String currentValue, TextRule rule) {
+        return readWithDefault(prompt, currentValue, input -> {
+            String checked = rule.check(input);
+            if (checked.equals(currentValue)) {
+                String message = prompt + " is already " + currentValue;
+                throw new ValidationException(prompt, message.endsWith(".") ? message : message + ".");
+            }
+            return checked;
+        });
+    }
+
+    /**
+     * Like {@link #readOptional}, but typing the suggested value is accepted. For forms where the value is only
+     * a suggestion, not something being changed.
+     */
+    public static String readWithDefault(String prompt, String defaultValue, TextRule rule) {
         while (true) {
-            String line = readLine(prompt + " [" + currentValue + "] (Enter to keep): ");
+            String line = readLine(prompt + " [" + defaultValue + "] (Enter to keep): ");
             if (line.isEmpty()) {
-                return currentValue;
+                return defaultValue;
             }
             try {
                 return rule.check(line);
@@ -172,6 +188,16 @@ public final class InputHelper {
      * for no limit). If {@code defaultValue} is not null, pressing Enter returns it.
      */
     public static LocalDate readDate(String prompt, LocalDate defaultValue, LocalDate min, LocalDate max) {
+        return readDate(prompt, defaultValue, min, max, false);
+    }
+
+    /** For update forms: like the four-argument {@code readDate}, but typing the current date is refused. */
+    public static LocalDate readDateForUpdate(String prompt, LocalDate currentValue, LocalDate min, LocalDate max) {
+        return readDate(prompt, currentValue, min, max, true);
+    }
+
+    private static LocalDate readDate(String prompt, LocalDate defaultValue, LocalDate min, LocalDate max,
+                                      boolean refuseDefault) {
         while (true) {
             String suffix = defaultValue == null ? " (yyyy-MM-dd): " : " (yyyy-MM-dd) [" + defaultValue + "]: ";
             String line = readLine(prompt + suffix);
@@ -186,7 +212,9 @@ public final class InputHelper {
                     continue;
                 }
             }
-            if (max != null && date.isAfter(max)) {
+            if (refuseDefault && !line.isEmpty() && date.equals(defaultValue)) {
+                ConsoleUI.printError(prompt + " is already " + defaultValue + ".");
+            } else if (max != null && date.isAfter(max)) {
                 ConsoleUI.printError(max.equals(LocalDate.now())
                         ? "Date cannot be in the future."
                         : "Date cannot be after " + max + ".");

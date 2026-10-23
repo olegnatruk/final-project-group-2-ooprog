@@ -133,6 +133,12 @@ Deleting a `PENDING` application never changes the pet's status (only approval d
   delete a pet/user with history, a blocked status change, disabling yourself or the last admin), the menu
   runs the service's `check…` method first, so the error shows before any form fields or the "Are you sure?"
   prompt. The service still re-checks when the action runs.
+- **Updating to the same value.** Every update form (My Profile, Update User, Update Pet, Update Application,
+  Update Record) refuses a value equal to the current one: `[ERROR] First name is already Kurt Angelo.`, then
+  asks again (Enter keeps it). Covers text, numbers, choices, yes/no and dates. Also: the same living
+  situation or "no experience" in an application update, and an admin password reset to the user's current
+  password. The new-application form is not an update, so it still accepts the pre-filled profile address and
+  contact number.
 - Taken emails/usernames, future or too-early dates, and password mismatches are rejected at the prompt and
   re-asked, not after the whole form.
 

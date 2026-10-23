@@ -378,11 +378,13 @@ private static final Scanner SCANNER = new Scanner(System.in);   // the only one
 ★ static String readText(String prompt)                            // overload: required, any length
 ★ static String readText(String prompt, int minLength, int maxLength)
 ★ static String readValidated(String prompt, TextRule rule)
-★ static String readOptional(String prompt, String currentValue, TextRule rule)   // Enter keeps
+★ static String readOptional(String prompt, String currentValue, TextRule rule)   // Enter keeps; typing the current value again is refused ("<prompt> is already <value>.")
+static String readWithDefault(String prompt, String defaultValue, TextRule rule)  // same, but the default is only a suggestion and may be typed again
 ★ static boolean readYesNo(String prompt)
 ★ static <E extends Enum<E>> E readEnum(String prompt, E[] values)
 ★ static LocalDate readDate(String prompt, LocalDate defaultValue)
 static LocalDate readDate(String prompt, LocalDate defaultValue, LocalDate min, LocalDate max)  // re-prompts outside min..max (null = no limit)
+static LocalDate readDateForUpdate(String prompt, LocalDate currentValue, LocalDate min, LocalDate max)  // as above, but refuses the current date
 ★ static String readId(String prompt, String prefix)
 ★ static boolean confirm(String action)
 static void pause()                                                // "Press Enter to continue..."

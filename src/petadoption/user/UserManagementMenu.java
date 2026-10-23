@@ -7,6 +7,7 @@ import petadoption.auth.AuthService;
 import petadoption.core.AllOfStrategy;
 import petadoption.core.SearchStrategy;
 import petadoption.exception.PetAdoptionException;
+import petadoption.exception.ValidationException;
 import petadoption.ui.Menu;
 import petadoption.user.search.UserKeywordSearch;
 import petadoption.user.search.UserRoleFilter;
@@ -151,8 +152,13 @@ public class UserManagementMenu extends Menu {
         String newPassword;
         String confirmPassword;
         while (true) {
-            newPassword = InputHelper.readValidated("New password: ",
-                    input -> Validator.validatePassword(input, user.getUsername()));
+            newPassword = InputHelper.readValidated("New password: ", input -> {
+                String checked = Validator.validatePassword(input, user.getUsername());
+                if (user.passwordMatches(checked)) {
+                    throw new ValidationException("New password", "The password is already this user's password.");
+                }
+                return checked;
+            });
             confirmPassword = InputHelper.readText("Confirm new password: ");
             if (newPassword.equals(confirmPassword)) {
                 break;

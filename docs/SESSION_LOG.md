@@ -124,3 +124,16 @@ Goal: make the code easier to explain at the defense without changing behaviour.
   who presents what. Every "Show" step was run against the app.
 - Verified: clean compile with `-Xlint:all`; scripted runs of apply-from-passport, approve, create/delete
   record, statistics, delete-pet / status-change / delete-user blocks, and the demo script.
+
+## 2026-10-23 — "Already that value" on updates (Kurt, branch `kurt/same-value-update`)
+
+Rule: updating a field to the value it already has is refused with `<Field> is already <value>.` and the
+field is asked again ([BUSINESS-RULES.md](BUSINESS-RULES.md#menu-behaviour-on-empty-or-blocked-actions)).
+- One change in `InputHelper.readOptional` covers My Profile, Update User, Update Pet, Update Application and
+  Update Record notes. New `readWithDefault` keeps the old behaviour for the new-application form, and
+  `readDateForUpdate` does the same check for the record's adoption date.
+- Pet update: age and weight now return the parsed number, so `03` or `12.50` match `3` or `12.5`; gender,
+  vaccination, dog size and the cat/bird yes/no questions refuse the current choice.
+- Application update: same living situation, same experience answer (No to No) and same experience details.
+  Admin Reset Password refuses the user's current password.
+- Verified with scripted runs for each form (repeat every field, then a real change still saves).
